@@ -46,14 +46,6 @@ PlayOSX turns your PC into a living-room console. Everything is built for a cont
 - **Night Light schedule**, idle screen, user profiles with PIN, and updates from GitHub Releases.
 
 
-## Contributing
-
-Issues and pull requests are welcome. Please open an issue first for big changes.
-
-## License
-
-Released under the MIT License. © 2026 Esma3iL Magdey
-
 ## ⚠️ Disclaimer
 
 PlayOSX is an independent fan project. It is not affiliated with or endorsed by Sony Interactive Entertainment. PlayStation and PS5 are trademarks of their respective owners.
