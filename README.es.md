@@ -6,7 +6,7 @@
 
 **Un lanzador de juegos para Windows pensado para mando, con interfaz estilo PS5.**
 
-![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white) ![Electron](https://img.shields.io/badge/Electron-30-47848F?logo=electron&logoColor=white) ![Version](https://img.shields.io/badge/version-1.0.1--beta-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![Languages](https://img.shields.io/badge/languages-6-orange)
+![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white) ![Electron](https://img.shields.io/badge/Electron-30-47848F?logo=electron&logoColor=white) ![Version](https://img.shields.io/badge/version-1.0.1--beta-blue)
 
 [English](README.md) · [العربية](README.ar.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · **Español** · [Português](README.pt.md)
 
@@ -14,13 +14,13 @@
 
 ---
 
-## 🎮 Vista previa
+## Vista previa
 
 <p align="center">
   <img src="docs/screenshot.png" alt="PlayOSX" width="900">
 </p>
 
-### 🎬 Ver la demo
+### Ver la demo
 
 <p align="center">
   <a href="https://youtu.be/YOUR_VIDEO_ID">
@@ -28,11 +28,11 @@
   </a>
 </p>
 
-## ✨ Acerca de
+## Acerca de
 
 PlayOSX convierte tu PC en una consola de salón. Todo está pensado para el mando: una pantalla de inicio fluida estilo PS5, un hub de juego con ilustraciones, un overlay en partida y un menú rápido. Todos tus juegos (Steam, Epic, emuladores, accesos directos) en un solo lugar.
 
-## 🚀 Características
+## Características
 
 - **Interfaz estilo PS5**: logo de arranque animado, fondo bokeh, grandes ilustraciones, carrusel fluido y sonidos.
 - **Una sola biblioteca**: Steam (incluso los juegos comprados sin instalar), Epic, accesos directos y emuladores de Nintendo Switch (yuzu y sus forks).
@@ -44,48 +44,6 @@ PlayOSX convierte tu PC en una consola de salón. Todo está pensado para el man
 - **Social**: amigos de Steam, control de voz de Discord y pantalla de descargas / actualizaciones de Steam.
 - **Temas de sonido**: paquetes de sonido de Steam Deck de deckthemes.com (o .zip / carpeta local).
 - **Luz nocturna programada**, pantalla de reposo, perfiles con PIN y actualizaciones desde GitHub Releases.
-
-## 🌍 Idiomas
-
-English, العربية (RTL completo), Français, Deutsch, Español y Português.
-
-## 📦 Primeros pasos
-
-### Descarga
-
-Descarga el instalador o el ZIP más reciente desde la página de [Releases](https://github.com/itsfizys/PlayOSX/releases) (Windows 10/11, x64).
-
-### Ejecutar desde el código
-
-Necesitas [Node.js](https://nodejs.org) y conexión a Internet (las herramientas nativas se descargan en el primer arranque).
-
-```bash
-git clone https://github.com/itsfizys/PlayOSX.git
-cd PlayOSX
-npm install
-npm start        # run
-npm run dist     # build the Windows installer (dist/)
-```
-
-## 🗂️ Estructura del proyecto
-
-```
-main/        Electron main process (library, launcher, OBS, Discord, overlay, updater…)
-  native/    Windows helpers (syshelper, display, PresentMon, libVIIPER)
-renderer/    UI (HTML / CSS / ES modules)
-  js/views/  Home, Library, Game Hub, Settings, Downloads…
-  js/locales/ ar · de · en · es · fr · pt
-build/       Installer scripts
-scripts/     Fetch / build helpers for native tools
-```
-
-## 🤝 Contribuir
-
-Se aceptan issues y pull requests. Abre primero un issue para cambios grandes.
-
-## 📄 Licencia
-
-Publicado bajo la licencia MIT. © 2026 Esma3iL Magdey
 
 ## ⚠️ Aviso
 
