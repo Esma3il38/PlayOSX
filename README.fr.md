@@ -6,7 +6,7 @@
 
 **Un lanceur de jeux pour Windows, pensé pour la manette, avec une interface façon PS5.**
 
-![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white) ![Electron](https://img.shields.io/badge/Electron-30-47848F?logo=electron&logoColor=white) ![Version](https://img.shields.io/badge/version-1.0.1--beta-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![Languages](https://img.shields.io/badge/languages-6-orange)
+![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white) ![Electron](https://img.shields.io/badge/Electron-30-47848F?logo=electron&logoColor=white) ![Version](https://img.shields.io/badge/version-1.0.1--beta-blue)
 
 [English](README.md) · [العربية](README.ar.md) · **Français** · [Deutsch](README.de.md) · [Español](README.es.md) · [Português](README.pt.md)
 
@@ -14,13 +14,13 @@
 
 ---
 
-## 🎮 Aperçu
+## Aperçu
 
 <p align="center">
   <img src="docs/screenshot.png" alt="PlayOSX" width="900">
 </p>
 
-### 🎬 Voir la démo
+### Voir la démo
 
 <p align="center">
   <a href="https://youtu.be/YOUR_VIDEO_ID">
@@ -28,11 +28,11 @@
   </a>
 </p>
 
-## ✨ À propos
+## À propos
 
 PlayOSX transforme votre PC en console de salon. Tout est conçu pour la manette : un écran d'accueil fluide façon PS5, un hub de jeu avec illustrations, une surcouche en jeu et un menu rapide. Tous vos jeux (Steam, Epic, émulateurs, raccourcis) au même endroit.
 
-## 🚀 Fonctionnalités
+## Fonctionnalités
 
 - **Interface façon PS5** : logo de démarrage animé, fond bokeh, grandes illustrations, carrousel fluide et sons.
 - **Une seule bibliothèque** : Steam (même les jeux possédés mais non installés), Epic, raccourcis du bureau et émulateurs Nintendo Switch (yuzu et ses forks).
@@ -44,48 +44,6 @@ PlayOSX transforme votre PC en console de salon. Tout est conçu pour la manette
 - **Social** : amis Steam, contrôle vocal Discord et écran des téléchargements / mises à jour Steam.
 - **Thèmes sonores** : packs de sons Steam Deck de deckthemes.com (ou .zip / dossier local).
 - **Veilleuse programmée**, écran de veille, profils avec code PIN et mises à jour depuis GitHub Releases.
-
-## 🌍 Langues
-
-English, العربية (RTL complet), Français, Deutsch, Español et Português.
-
-## 📦 Démarrage
-
-### Téléchargement
-
-Récupérez l'installeur ou l'archive ZIP la plus récente sur la page [Releases](https://github.com/itsfizys/PlayOSX/releases) (Windows 10/11, x64).
-
-### Lancer depuis les sources
-
-Il faut [Node.js](https://nodejs.org) et une connexion Internet (les outils natifs sont récupérés au premier lancement).
-
-```bash
-git clone https://github.com/itsfizys/PlayOSX.git
-cd PlayOSX
-npm install
-npm start        # run
-npm run dist     # build the Windows installer (dist/)
-```
-
-## 🗂️ Structure du projet
-
-```
-main/        Electron main process (library, launcher, OBS, Discord, overlay, updater…)
-  native/    Windows helpers (syshelper, display, PresentMon, libVIIPER)
-renderer/    UI (HTML / CSS / ES modules)
-  js/views/  Home, Library, Game Hub, Settings, Downloads…
-  js/locales/ ar · de · en · es · fr · pt
-build/       Installer scripts
-scripts/     Fetch / build helpers for native tools
-```
-
-## 🤝 Contribuer
-
-Les issues et pull requests sont les bienvenues. Ouvrez d'abord une issue pour les gros changements.
-
-## 📄 Licence
-
-Publié sous licence MIT. © 2026 Esma3iL Magdey
 
 ## ⚠️ Avertissement
 
