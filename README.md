@@ -47,25 +47,8 @@ PlayOSX turns your PC into a living-room console. Everything is built for a cont
 
 ## 🌍 Languages
 
-English, العربية (full RTL), Français, Deutsch, Español and Português.
+English, العربية , Français, Deutsch, Español and Português.
 
-## 📦 Getting started
-
-### Download
-
-Grab the latest installer or ZIP from the [Releases](https://github.com/itsfizys/PlayOSX/releases) page (Windows 10/11, x64).
-
-### Run from source
-
-You need [Node.js](https://nodejs.org) and an internet connection (native helpers are fetched on the first run).
-
-```bash
-git clone https://github.com/itsfizys/PlayOSX.git
-cd PlayOSX
-npm install
-npm start        # run
-npm run dist     # build the Windows installer (dist/)
-```
 
 ## 🗂️ Project structure
 
