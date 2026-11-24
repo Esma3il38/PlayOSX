@@ -14,13 +14,13 @@
 
 ---
 
-## 🎮 Preview
+## Preview
 
 <p align="center">
   <img src="docs/screenshot.png" alt="PlayOSX" width="900">
 </p>
 
-### 🎬 Watch the demo
+### Watch the demo
 
 <p align="center">
   <a href="https://youtu.be/YOUR_VIDEO_ID">
@@ -28,11 +28,11 @@
   </a>
 </p>
 
-## ✨ About
+## About
 
 PlayOSX turns your PC into a living-room console. Everything is built for a controller: a smooth PS5-style home screen, a game hub with artwork, an in-game overlay and a quick menu. All your games (Steam, Epic, emulators, shortcuts) live in one place.
 
-## 🚀 Features
+## Features
 
 - **PS5-style interface**: animated boot logo, bokeh background, hero artwork, smooth tile carousel and sounds.
 - **One library for everything**: Steam (including owned but not installed), Epic, desktop shortcuts and Nintendo Switch emulators (yuzu and its forks).
@@ -45,28 +45,12 @@ PlayOSX turns your PC into a living-room console. Everything is built for a cont
 - **Sound themes**: Steam Deck sound packs from deckthemes.com (or a local .zip / folder).
 - **Night Light schedule**, idle screen, user profiles with PIN, and updates from GitHub Releases.
 
-## 🌍 Languages
 
-English, العربية , Français, Deutsch, Español and Português.
-
-
-## 🗂️ Project structure
-
-```
-main/        Electron main process (library, launcher, OBS, Discord, overlay, updater…)
-  native/    Windows helpers (syshelper, display, PresentMon, libVIIPER)
-renderer/    UI (HTML / CSS / ES modules)
-  js/views/  Home, Library, Game Hub, Settings, Downloads…
-  js/locales/ ar · de · en · es · fr · pt
-build/       Installer scripts
-scripts/     Fetch / build helpers for native tools
-```
-
-## 🤝 Contributing
+## Contributing
 
 Issues and pull requests are welcome. Please open an issue first for big changes.
 
-## 📄 License
+## License
 
 Released under the MIT License. © 2026 Esma3iL Magdey
 
