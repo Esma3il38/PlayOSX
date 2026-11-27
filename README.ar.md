@@ -8,7 +8,7 @@
 
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white) ![Electron](https://img.shields.io/badge/Electron-44-47848F?logo=electron&logoColor=white) ![Version](https://img.shields.io/badge/version-1.0.1--beta-blue)
 
-[English](README.md) · **العربية** · [Français](README.fr.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Português](README.pt.md)
+[English](README.md) · **العربية**
 
 </div>
 
@@ -52,3 +52,9 @@ PlayOSX بيحوّل جهازك لكونسول في الصالون. كل حاج�
 PlayOSX مشروع مستقل من محبي PlayStation، وغير تابع لشركة Sony Interactive Entertainment أو معتمد منها. PlayStation وPS5 علامات تجارية لأصحابها.
 
 </div>
+
+
+## License
+
+[MIT](LICENSE)
+
