@@ -1,7 +1,7 @@
 {
   "name": "playosx",
   "productName": "PlayOSX",
-  "version": "1.0.2-beta",
+  "version": "1.0.2",
   "description": "A controller-first game launcher for Windows with a PS5-style interface (multi-language)",
   "main": "main/main.js",
   "private": true,
