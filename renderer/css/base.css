@@ -1,0 +1,1102 @@
+/* Cairo: Arabic glyphs only (unicode-range), Latin text keeps the UI font. */
+@font-face {
+  font-family: "Cairo";
+  src: url("../fonts/cairo/Cairo-Variable.ttf") format("truetype");
+  font-weight: 200 1000;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F, U+060C, U+061B, U+061F;
+}
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTLight.TTF") format("truetype");
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTRg.TTF") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTMedium.TTF") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTBold.TTF") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTHeavy.TTF") format("truetype");
+  font-weight: 800;
+  font-display: swap;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
+@font-face {
+  font-family: "PS Sans";
+  src: url("../fonts/ps/PSSans-Light.woff") format("woff");
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PS Sans";
+  src: url("../fonts/ps/PSSans-Regular.woff") format("woff");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PS Sans";
+  src: url("../fonts/ps/PSSans-Medium.woff") format("woff");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PS Sans";
+  src: url("../fonts/ps/PSSans-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PS Sans";
+  src: url("../fonts/ps/PSSans-Bold.woff") format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PS Sans";
+  src: url("../fonts/ps/PSSans-ExtraBold.woff") format("woff");
+  font-weight: 800;
+  font-display: swap;
+}
+
+:root {
+  --ui-scale: 1;
+  --font: "Cairo", "Segoe UI Variable Display", "Segoe UI Variable Text", "Segoe UI", "SF Pro Display", system-ui, sans-serif;
+  --text: #ffffff;
+  --text-2: rgba(255, 255, 255, 0.72);
+  --text-3: rgba(255, 255, 255, 0.5);
+  --text-4: rgba(255, 255, 255, 0.32);
+  --panel: rgba(32, 34, 41, 0.86);
+  --panel-solid: #1d1f25;
+  --panel-2: rgba(255, 255, 255, 0.08);
+  --panel-3: rgba(255, 255, 255, 0.14);
+  --line: rgba(255, 255, 255, 0.12);
+  --blue: #2f7cf6;
+  --blue-2: #0f5bd8;
+  --green: #22c55e;
+  --red: #ef4444;
+  --tint: 20, 30, 60;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* The PS5's screen change (curves fitted to a video of it, frame by frame):
+     the screen left fades and shrinks, the new one fades in and grows. */
+  --zoom-out-ease: cubic-bezier(0.33, 1, 0.68, 1);
+  --zoom-fade-ease: cubic-bezier(0.5, 1, 0.89, 1);
+  --zoom-in-ease: cubic-bezier(0, 0, 0.2, 1);
+  --spd: 0.6;
+  --ring: 0 0 0 0.32rem #fff, 0 0 2.6rem rgba(255, 255, 255, 0.22);
+}
+
+html {
+  --chrome: 0px;
+  font-size: calc(min(100vw / 192, (100vh - var(--chrome)) / 108) * var(--ui-scale));
+  background: #000;
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 2rem;
+  background: #000;
+  color: var(--text);
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.hide-cursor,
+body.hide-cursor * {
+  cursor: none !important;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+svg.ic {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  display: block;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.08s !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* App shell                                                           */
+/* ------------------------------------------------------------------ */
+#app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  transition: filter calc(0.4s * var(--spd)) var(--ease), transform calc(0.4s * var(--spd)) var(--ease);
+}
+
+#app.dimmed {
+  filter: brightness(0.42) blur(0.5rem) saturate(1.1);
+}
+
+/* Starting a game (see .launch-overlay): the page's buttons and text fade out
+   while its background stays, as on the PS5. */
+#app.launching #views {
+  opacity: 0;
+  transition: opacity 0.2s var(--ease);
+}
+
+#bg-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #000;
+}
+
+#views {
+  position: absolute;
+  /* Safe area: the interface keeps this much of every edge clear (Screen Edges setting). */
+  inset: calc(var(--safe, 0) * 1%);
+}
+
+body.safe-flash #app::after {
+  content: '';
+  position: absolute;
+  inset: calc(var(--safe, 0) * 1%);
+  border: 0.2rem dashed rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+  z-index: 50;
+}
+
+.view {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+/* Changing screens, as the PS5 does it (fitted to a video of its Settings,
+   frame by frame): the screen left behind fades (0.2 s) and shrinks to 0.97
+   (0.22 s); 0.11 s in, the new one fades in (0.23 s) and grows from 0.97,
+   slowing to a stop (0.32 s). Going back looks the same. */
+.view.anim-in,
+.view.anim-back-in {
+  animation:
+    viewFadeIn calc(0.23s * var(--spd)) var(--zoom-fade-ease) calc(0.11s * var(--spd)) both,
+    viewGrow calc(0.32s * var(--spd)) var(--zoom-in-ease) calc(0.11s * var(--spd)) both;
+}
+
+.view.anim-out,
+.view.anim-back-out {
+  display: block;
+  pointer-events: none;
+  animation:
+    viewFadeOut calc(0.2s * var(--spd)) var(--zoom-out-ease) both,
+    viewShrink calc(0.22s * var(--spd)) var(--zoom-out-ease) both;
+}
+
+@keyframes viewFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes viewGrow {
+  from { transform: scale(0.97); }
+  to { transform: none; }
+}
+@keyframes viewFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes viewShrink {
+  from { transform: none; }
+  to { transform: scale(0.97); }
+}
+
+/* Windowed mode: a slim title bar above the app (window buttons are native) */
+html.windowed {
+  --chrome: 34px;
+}
+
+#drag-strip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 34px;
+  -webkit-app-region: drag;
+  display: none;
+  z-index: 9999;
+  background: #05070d;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  line-height: 34px;
+  padding-left: 14px;
+  letter-spacing: 0.04em;
+}
+
+html.windowed #drag-strip {
+  display: block;
+}
+
+html.windowed #app,
+html.windowed .overlay,
+html.windowed .boot {
+  top: var(--chrome) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero background (shared by Home and Game Hub)                       */
+/* ------------------------------------------------------------------ */
+#hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero-layer {
+  position: absolute;
+  inset: -1%;
+  background-size: cover;
+  background-position: center 30%;
+  opacity: 0;
+  transition: opacity calc(0.75s * var(--spd)) var(--ease);
+  will-change: opacity, transform;
+}
+
+.hero-layer.show {
+  opacity: 1;
+}
+
+.hero-motion .hero-layer.drifting {
+  animation: heroDrift 18s var(--ease-out) both;
+}
+
+@keyframes heroDrift {
+  from { transform: scale(1.09) translate3d(0.6%, 0, 0); }
+  to { transform: scale(1.0) translate3d(0, 0, 0); }
+}
+
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity calc(0.6s * var(--spd)) var(--ease), background calc(0.6s * var(--spd)) var(--ease);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.05) 26%, rgba(0, 0, 0, 0) 45%, rgba(var(--tint), 0.55) 78%, rgba(0, 0, 0, 0.92) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.55) 30%, rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0) 72%);
+}
+
+#hero-bg.has-image .hero-scrim {
+  opacity: 1;
+}
+
+/* Blurred at a quarter of the size and scaled back up: same look, ~16x fewer pixels to blur. */
+#hero-bg .hero-layer.blur-art {
+  inset: auto;
+  left: -12%;
+  top: -12%;
+  width: 31%;
+  height: 31%;
+  transform-origin: 0 0;
+  transform: scale(4);
+  background-position: center;
+  filter: blur(1.25rem) saturate(1.6) brightness(0.62);
+  animation: none !important;
+}
+
+#hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 6, 12, 0.88);
+  opacity: 0;
+  transition: opacity calc(0.6s * var(--spd)) var(--ease);
+}
+
+#hero-bg.deep::after {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* Shared bits                                                         */
+/* ------------------------------------------------------------------ */
+.focus-ring {
+  box-shadow: var(--ring);
+}
+
+/* ------------------------------------------------------------------ */
+/* Focus ring + glint (PS5 style)                                      */
+/* ------------------------------------------------------------------ */
+/*
+ * .fx elements get a ring drawn around them while focused. As on the PS5
+ * (measured from a video of a focused Settings row): the ring is cream on one
+ * side, grey-lavender along the middle and nearly gone on the far side, and
+ * that light swings slowly back and forth (the far side tilts between the
+ * top and bottom corners about every 7 s), so the bottom edge is warm, almost
+ * yellow, some of the time. After ~1.5 s of focus a broad, soft band of light
+ * sweeps across the element left to right in under a second, every 5 s.
+ * .fx-in puts the ring on the element's edge (list rows) instead of outside.
+ */
+@property --ring-a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.fx {
+  position: relative;
+  --fx-r: 1.2rem;
+  --fx-gap: 0.5rem;
+  --fx-w: 0.28rem;
+  --glint: 0.3;
+  --glint-size: 300%;
+  /* The ring's light (colour and how much of what's behind shows through). */
+  --ring-bright: rgba(255, 241, 228, 1);
+  --ring-mid: rgba(236, 234, 248, 0.82);
+  --ring-dark: rgba(236, 234, 248, 0.42);
+}
+
+.fx::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * (var(--fx-gap) + var(--fx-w)));
+  border-radius: calc(var(--fx-r) + var(--fx-gap) + var(--fx-w));
+  padding: var(--fx-w);
+  /* Light from the left (270deg), dark towards the right (90deg). */
+  background: conic-gradient(
+    from var(--ring-a),
+    var(--ring-mid) 0deg,
+    var(--ring-dark) 70deg,
+    var(--ring-dark) 110deg,
+    var(--ring-mid) 180deg,
+    var(--ring-bright) 245deg,
+    var(--ring-bright) 295deg,
+    var(--ring-mid) 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 0.2s var(--ease), transform 0.4s var(--ease-out);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.fx::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--fx-r);
+  /* A band wider than the element, nearly upright, soft all the way across. */
+  background: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 10%,
+      rgba(255, 255, 255, calc(var(--glint) * 0.6)) 30%,
+      rgba(255, 255, 255, var(--glint)) 50%,
+      rgba(255, 255, 255, calc(var(--glint) * 0.6)) 70%,
+      rgba(255, 255, 255, 0) 90%
+    )
+    no-repeat;
+  background-size: var(--glint-size) 100%;
+  background-position: 115% 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.fx.focused::before,
+.focused > .fx::before,
+.fx.sel:not(.tile)::before {
+  opacity: 1;
+  transform: none;
+  /* 30 steps a second: the soft light looks the same, and the ring is
+     repainted half as often (it runs whenever the launcher is in front). */
+  animation: ringSwing 3.5s steps(105) infinite alternate;
+}
+
+.fx.focused::after,
+.focused > .fx::after,
+.fx.sel:not(.tile)::after {
+  animation: glint 5s linear 1.5s infinite;
+}
+
+/* List rows: the PS5's measured strength (the band lifts a dark row by ~13% white). */
+.fx-in {
+  --fx-gap: 0rem;
+  --fx-w: 0.2rem;
+  --glint: 0.13;
+  --ring-bright: rgba(255, 241, 228, 0.75);
+  --ring-mid: rgba(236, 234, 248, 0.55);
+  --ring-dark: rgba(236, 234, 248, 0.25);
+}
+
+.fx-in::before {
+  inset: 0;
+  border-radius: var(--fx-r);
+  transform: none;
+}
+
+/* Ease in and out at each end of the swing (alternate runs it back). */
+@keyframes ringSwing {
+  0% { --ring-a: -25deg; animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
+  100% { --ring-a: 25deg; }
+}
+
+/* The band slides in from the left and out to the right in 0.95 s, eased;
+   its soft edges do the fading. */
+@keyframes glint {
+  0% { opacity: 1; background-position: 115% 0; animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
+  19% { opacity: 1; background-position: -15% 0; }
+  19.01%, 100% { opacity: 0; background-position: -15% 0; }
+}
+
+.reduce-motion .fx::after {
+  display: none;
+}
+
+.reduce-motion .fx::before {
+  animation: none !important;
+}
+
+@keyframes bumpLeft {
+  0%, 100% { translate: 0 0; }
+  40% { translate: -0.8rem 0; }
+}
+@keyframes bumpRight {
+  0%, 100% { translate: 0 0; }
+  40% { translate: 0.8rem 0; }
+}
+@keyframes bumpUp {
+  0%, 100% { translate: 0 0; }
+  40% { translate: 0 -0.8rem; }
+}
+@keyframes bumpDown {
+  0%, 100% { translate: 0 0; }
+  40% { translate: 0 0.8rem; }
+}
+.bump-left { animation: bumpLeft 0.26s var(--ease); }
+.bump-right { animation: bumpRight 0.26s var(--ease); }
+.bump-up { animation: bumpUp 0.26s var(--ease); }
+.bump-down { animation: bumpDown 0.26s var(--ease); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(1.6rem); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  border: 0.3rem solid rgba(255, 255, 255, 0.18);
+  border-top-color: #fff;
+  animation: spin 0.9s linear infinite;
+}
+
+/* Button prompts */
+.hints {
+  display: flex;
+  gap: 3.2rem;
+  align-items: center;
+  font-size: 1.9rem;
+  color: var(--text-2);
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.8rem;
+  height: 2.8rem;
+  padding: 0 0.6rem;
+  border-radius: 1.4rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
+}
+
+.glyph.round {
+  width: 2.8rem;
+  padding: 0;
+}
+
+.glyph svg {
+  width: 1.7rem;
+  height: 1.7rem;
+}
+
+.glyph.kb {
+  border-radius: 0.6rem;
+  font-size: 1.35rem;
+  padding: 0 0.8rem;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.glyph.xa { background: #5fb336; color: #fff; }
+.glyph.xb { background: #e04a3c; color: #fff; }
+.glyph.xx { background: #2d7fdc; color: #fff; }
+.glyph.xy { background: #f1b711; color: #111; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 2.6rem;
+  padding: 0 0.9rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #111;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  height: 5.2rem;
+  padding: 0 2.2rem;
+  border-radius: 1.2rem;
+  background: rgba(20, 22, 28, 0.62);
+  backdrop-filter: blur(1.2rem);
+  font-size: 2rem;
+}
+
+.pill svg {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.avatar {
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+}
+
+.avatar .av-initial {
+  font-size: 0.48em;
+  letter-spacing: 0.02em;
+}
+
+.avatar .av-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ------------------------------------------------------------------ */
+/* Toggle switch (PS5 style)                                           */
+/* ------------------------------------------------------------------ */
+.switch {
+  position: relative;
+  flex: none;
+  width: 4.6rem;
+  height: 2.4rem;
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 0.1rem rgba(255, 255, 255, 0.3);
+  transition: background 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.switch i {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: #d9dbe0;
+  box-shadow: none;
+  transition: transform 0.25s var(--ease-out), background 0.25s var(--ease);
+}
+
+.switch.on {
+  background: #fff;
+  box-shadow: none;
+}
+
+.switch.on i {
+  transform: translateX(2.2rem);
+  background: #15171c;
+}
+
+/* ------------------------------------------------------------------ */
+/* Slider (PS5 style)                                                  */
+/* ------------------------------------------------------------------ */
+.ps-slider {
+  --p: 0.5;
+  --knob: 2.8rem;
+  position: relative;
+  display: block;
+  height: calc(var(--knob) + 0.8rem);
+  min-width: 12rem;
+}
+
+.pss-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 0.7rem;
+  transform: translateY(-50%);
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 0 0 0.14rem rgba(10, 11, 14, 0.7), inset 0 0.1rem 0.2rem rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.pss-track i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--knob) / 2 + (100% - var(--knob)) * var(--p));
+  border-radius: inherit;
+  background: linear-gradient(180deg, #fbfcfd, #c7cad0);
+  transition: width 0.12s var(--ease);
+}
+
+.pss-knob {
+  position: absolute;
+  top: 50%;
+  left: calc((100% - var(--knob)) * var(--p));
+  width: var(--knob);
+  height: var(--knob);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: radial-gradient(circle at 38% 32%, #ffffff, #dcdee2 55%, #aeb1b8);
+  box-shadow: 0 0 0 0.3rem #23262c, 0 0 0 0.42rem rgba(255, 255, 255, 0.14), 0 0.3rem 0.8rem rgba(0, 0, 0, 0.55);
+  transition: left 0.12s var(--ease);
+}
+
+.ps-slider.thin {
+  --knob: 1.8rem;
+}
+
+.ps-slider.thin .pss-track {
+  height: 0.5rem;
+}
+
+.ps-slider.no-knob .pss-knob {
+  display: none;
+}
+
+.ps-slider.no-knob .pss-track i {
+  width: calc(100% * var(--p));
+}
+
+/* ------------------------------------------------------------------ */
+/* List move wave (FocusList): a curved band of light sweeps across the  */
+/* newly selected row, downwards or upwards with the move.               */
+/* ------------------------------------------------------------------ */
+.fx-wave {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.fx-wave::before {
+  content: "";
+  position: absolute;
+  left: -15%;
+  right: -15%;
+  height: 160%;
+  top: -160%;
+  opacity: 0;
+  /* the lower edge of a wide ellipse: a soft, slightly curved arc of light */
+  background: radial-gradient(60% 50% at 50% 0%, transparent 62%, rgba(255, 255, 255, 0.3) 76%, rgba(255, 255, 255, 0.1) 86%, transparent 94%);
+  filter: blur(0.4rem);
+}
+
+.fx-wave.up::before {
+  background: radial-gradient(60% 50% at 50% 100%, transparent 62%, rgba(255, 255, 255, 0.3) 76%, rgba(255, 255, 255, 0.1) 86%, transparent 94%);
+}
+
+.fx-wave.run.down::before {
+  animation: fxWaveDown 0.22s cubic-bezier(0.3, 0.5, 0.4, 1) both;
+}
+
+.fx-wave.run.up::before {
+  animation: fxWaveUp 0.22s cubic-bezier(0.3, 0.5, 0.4, 1) both;
+}
+
+/* Sideways (a row of items, e.g. the quick menu's Customize): a soft vertical band. */
+.fx-wave.left::before,
+.fx-wave.right::before {
+  top: -15%;
+  bottom: -15%;
+  height: auto;
+  width: 160%;
+  left: -160%;
+  right: auto;
+  background: radial-gradient(50% 60% at 0% 50%, transparent 62%, rgba(255, 255, 255, 0.3) 76%, rgba(255, 255, 255, 0.1) 86%, transparent 94%);
+}
+
+.fx-wave.left::before {
+  background: radial-gradient(50% 60% at 100% 50%, transparent 62%, rgba(255, 255, 255, 0.3) 76%, rgba(255, 255, 255, 0.1) 86%, transparent 94%);
+}
+
+.fx-wave.run.right::before {
+  animation: fxWaveRight 0.26s cubic-bezier(0.3, 0.5, 0.4, 1) both;
+}
+
+.fx-wave.run.left::before {
+  animation: fxWaveLeft 0.26s cubic-bezier(0.3, 0.5, 0.4, 1) both;
+}
+
+@keyframes fxWaveRight {
+  0% { left: -150%; opacity: 0; }
+  12% { opacity: 1; }
+  65% { opacity: 0.85; }
+  100% { left: 40%; opacity: 0; }
+}
+
+@keyframes fxWaveLeft {
+  0% { left: 90%; opacity: 0; }
+  12% { opacity: 1; }
+  65% { opacity: 0.85; }
+  100% { left: -100%; opacity: 0; }
+}
+
+@keyframes fxWaveDown {
+  0% { top: -150%; opacity: 0; }
+  12% { opacity: 1; }
+  65% { opacity: 0.85; }
+  100% { top: 40%; opacity: 0; }
+}
+
+@keyframes fxWaveUp {
+  0% { top: 90%; opacity: 0; }
+  12% { opacity: 1; }
+  65% { opacity: 0.85; }
+  100% { top: -100%; opacity: 0; }
+}
+
+.reduce-motion .fx-wave {
+  display: none;
+}
+
+/* Settings › System › Language and Font: the PlayStation (SST) typeface,
+   as the PS5 sets it. Measured from PS5 screenshots (stroke width against
+   letter height), nearly everything there is SST Light: titles, settings
+   rows and sections, tile names, captions, body text. So weights map one
+   step lighter than their names: normal text is Light, 500 Regular, 600
+   Medium, 700 Bold. Only emphasis is bold: the selected tab at the top, text
+   buttons. */
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTLight.TTF") format("truetype");
+  font-weight: 100 449;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTRg.TTF") format("truetype");
+  font-weight: 450 549;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTMedium.TTF") format("truetype");
+  font-weight: 550 649;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTBold.TTF") format("truetype");
+  font-weight: 650 749;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SST UI";
+  src: url("../fonts/sst/SSTHeavy.TTF") format("truetype");
+  font-weight: 750 900;
+  font-display: swap;
+}
+
+/* PlayStation look. "SST UI" is Sony's own typeface (drop the files into
+   renderer/fonts/sst/, see README); "PS Sans" is the bundled open-licence
+   stand-in (Inter Display, tuned below) that is used when SST isn't there. */
+html.font-ps,
+html.font-sst {
+  --font: "Cairo", "SST UI", "PS Sans", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  letter-spacing: 0.005em;
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: optimizeLegibility;
+}
+html.font-ps body,
+html.font-sst body {
+  font-weight: 400;
+}
+html.font-ps .tb-tab.active,
+html.font-ps .hub-btn,
+html.font-ps .hub-title,
+html.font-ps .card-head {
+  font-synthesis: none;
+}
+html.font-ps .tb-tab.active { font-weight: 600; }
+html.font-ps .hub-btn { font-weight: 700; }
+html.font-ps .hub-title,
+html.font-ps .card-head { font-weight: 300; }
+
+/* The PS5's emphasis: the selected Games / Media tab is medium and the hub's
+   buttons bold; a game's name and the hub's card headings are light like the rest. */
+html.font-sst .tb-tab.active {
+  font-weight: 600;
+}
+
+html.font-sst .hub-btn {
+  font-weight: 700;
+}
+
+html.font-sst .hub-title,
+html.font-sst .card-head {
+  font-weight: 300;
+}
+
+/* Download progress bars (PS5): while Steam is working, a soft glow runs along
+   the filled part to its end, about every second and a half. */
+.pulse {
+  overflow: visible !important;
+}
+
+.pulse > i {
+  position: relative;
+  background: #d3d5da;
+}
+
+.pulse > i::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: min(32%, 14rem);
+  height: 360%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #fff 0%, rgba(255, 255, 255, 0.9) 30%, rgba(255, 255, 255, 0.3) 65%, rgba(255, 255, 255, 0) 100%);
+  transform: translate(-100%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  animation: barPulse 1.4s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
+
+@keyframes barPulse {
+  0% {
+    left: 32%;
+    opacity: 0;
+  }
+  22% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 0.95;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+body.reduce-motion .pulse > i::after {
+  display: none;
+}
+
+/* Readable chat scrolling prompts: left stick or separate up/down keys. */
+.scroll-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.glyph.scroll-stick,
+.glyph.scroll-key {
+  min-width: 3.6rem;
+  height: 3.6rem;
+  font-size: 2rem;
+}
+
+.glyph.scroll-stick {
+  width: 3.6rem;
+  border-radius: 50%;
+}
+
+.glyph.scroll-key,
+.scroll-direction {
+  font-size: 2.6rem;
+  line-height: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* Arabic: the whole interface stays left-to-right, like the rest      */
+/* of the launcher. Arabic words still join and read correctly.        */
+/* To flow text right-to-left instead, add on html.lang-rtl:            */
+/*   :is(h1,h2,h3,h4,h5,h6,p,span,label,button,li,div){unicode-bidi:plaintext}  */
+/* ------------------------------------------------------------------ */
+html.lang-rtl,
+html.lang-rtl body {
+  direction: ltr;
+}
+
+/* Tracking and capitals break Arabic letter joining. */
+html.lang-rtl *,
+html.lang-rtl *::before,
+html.lang-rtl *::after {
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+html.lang-rtl body {
+  font-family: var(--font), Tahoma, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+/* Display test (js/ui/displaytest.js) */
+.display-test {
+  z-index: 900;
+  background: #000;
+  cursor: none;
+}
+.dt-screen {
+  position: absolute;
+  inset: 0;
+}
+.dt-ramp {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 72%;
+  height: 28%;
+}
+.dt-grad {
+  height: 25%;
+}
+.dt-levels {
+  position: absolute;
+  inset: 20% 8%;
+  display: flex;
+  gap: 1.2%;
+}
+.dt-levels i {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.dt-levels b {
+  font: 600 1.6rem var(--font);
+  color: #555;
+  padding-bottom: 1rem;
+}
+.dt-frame {
+  position: absolute;
+  border: 0.2rem solid #fff;
+}
+.dt-frame span {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.8rem;
+  font: 600 1.4rem var(--font);
+  color: #fff;
+}
+.dt-label {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  transform: translateX(-50%);
+  padding: 0.8rem 1.8rem;
+  border-radius: 99rem;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font: 500 1.8rem var(--font);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+  pointer-events: none;
+}
+.dt-label.show {
+  opacity: 1;
+}

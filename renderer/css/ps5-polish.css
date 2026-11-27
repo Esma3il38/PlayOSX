@@ -1,0 +1,364 @@
+/* ==========================================================================
+   PS5 polish layer (loaded last)
+   - Game tiles: no pulse after stopping, crisp art, no filter/glint over it
+   - Smooth carousel movement
+   - Home tab labels animate
+   ========================================================================== */
+
+/* ---- Game tiles: crisp, calm, smooth --------------------------------- */
+/* will-change:transform froze the raster at the small size, so the enlarged tile looked soft. */
+.tile { will-change: auto !important; backface-visibility: visible !important; contain: none !important; }
+.tile-inner, .tile-art, .tile-art img { filter: none !important; -webkit-backdrop-filter: none; image-rendering: auto; }
+.tile:not(.tile-library) .tile-inner { backdrop-filter: none !important; }
+.tile-art img { transform: translateZ(0); }
+
+/* No breathing glow, no pop-bounce, no light sweep over the artwork: the tile just rests. */
+.tile.focused .tile-inner,
+.tile.sel.focused .tile-inner,
+.lib-tile.focused .lt-art { animation: none !important; }
+.tile.sel.focused .tile-inner.pop { animation: none !important; }
+.carousel.tab-in .tile.sel.focused .tile-inner.pop,
+.carousel.tab-in .tile.focused .tile-inner {
+  animation: tileIn calc(0.55s * var(--spd)) var(--ease-out) both !important;
+  animation-delay: calc(var(--i) * 30ms) !important;
+}
+.tile.fx::after, .tile.focused::after { display: none !important; animation: none !important; }
+/* Ring fades in only; it doesn't shrink/grow into place. */
+.tile.fx::before { transform: none !important; transition: opacity .18s ease !important; animation: none !important; }
+.tile.focused .tile-inner, .tile.sel.focused .tile-inner { transition: box-shadow .25s ease !important; }
+
+/* Carousel movement: one smooth, slightly longer ease (was forced to 0.16s with no easing curve). */
+.tile {
+  transition: transform calc(0.34s * var(--spd)) cubic-bezier(0.22, 0.8, 0.2, 1), opacity calc(0.25s * var(--spd)) ease !important;
+}
+
+/* ---- Home: "Games" / "Media" tab labels ------------------------------- */
+.tb-tab { transition: transform .35s cubic-bezier(.22,.8,.2,1), opacity .3s ease, color .3s ease, text-shadow .3s ease !important; }
+.tb-tab:not(.active) { opacity: .62; transform: translateY(.15rem) scale(.96); }
+.tb-tab.active { opacity: 1; transform: translateY(0) scale(1.04); }
+.tb-tab.active::after { animation: tabUnderline .45s cubic-bezier(.22,.8,.2,1) both; transform-origin: center; }
+@keyframes tabUnderline { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+.tb-tab.tab-pop { animation: tabLabelIn .5s cubic-bezier(.22,.8,.2,1) both; }
+@keyframes tabLabelIn { from { opacity: 0; transform: translateY(-1rem) scale(.92); } to { opacity: 1; transform: translateY(0) scale(1.04); } }
+.topbar .tb-tab:nth-child(1) { animation: tabLabelIn .6s cubic-bezier(.22,.8,.2,1) .05s backwards; }
+.topbar .tb-tab:nth-child(2) { animation: tabLabelIn .6s cubic-bezier(.22,.8,.2,1) .13s backwards; }
+.topbar .tb-tab:nth-child(3) { animation: tabLabelIn .6s cubic-bezier(.22,.8,.2,1) .21s backwards; }
+body.reduce-motion .tb-tab, body.reduce-motion .tb-tab.active::after { animation: none !important; }
+
+/* ==========================================================================
+   Quick-menu side panel (music, etc.): same glass, motion and corners as the
+   rest of the system; sliders only move after X (edit mode).
+   ========================================================================== */
+.qm-panel {
+  border-radius: 2rem;
+  transform-origin: 50% 100%;
+  animation: qmPanelIn calc(.34s * var(--spd)) cubic-bezier(.2, 0, 0, 1) both !important;
+  max-width: calc(100vw - 4.8rem);
+}
+.qm-panel.out { animation: qmPanelOut calc(.22s * var(--spd)) cubic-bezier(.4, 0, 1, 1) both !important; }
+@keyframes qmPanelIn { from { opacity: 0; transform: translateY(2.4rem) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes qmPanelOut { to { opacity: 0; transform: translateY(1.6rem) scale(.98); } }
+
+/* Rows slide up one after another, like the settings lists */
+.qm-panel .qp-row, .qm-panel .mp { animation: ps5RiseIn calc(.4s * var(--spd)) cubic-bezier(.2, 0, 0, 1) both; }
+.qm-panel .qp-row:nth-child(2) { animation-delay: .03s; } .qm-panel .qp-row:nth-child(3) { animation-delay: .06s; }
+.qm-panel .qp-row:nth-child(4) { animation-delay: .09s; } .qm-panel .qp-row:nth-child(n+5) { animation-delay: .12s; }
+.qm-panel .qp-row { --fx-r: var(--sharp); border-radius: var(--sharp) !important; transition: background .2s, box-shadow .25s, scale .25s cubic-bezier(.2, 0, 0, 1); }
+
+/* Mixed Arabic / English titles keep their natural order and alignment */
+.mp-title, .mp-artist, .mp-app { unicode-bidi: plaintext; text-align: start; }
+html.lang-rtl .mp { direction: rtl; }
+html.lang-rtl .mp-time { direction: ltr; }
+.qm-panel { overflow-x: hidden; }
+
+/* Slider rows: focus shows a soft ring only; knob grows and track thickens while editing (after X) */
+.qm-panel:has(.qp-proxy.focused:not(.editing)) .mp-progress .pss-knob { box-shadow: 0 0 0 .2rem rgba(255,255,255,.55); }
+.qm-panel .qp-row.editing { box-shadow: inset 0 0 0 .22rem #fff, 0 0 2.4rem rgba(120,170,255,.28); background: rgba(255,255,255,.12); }
+.mp-progress .pss-knob, .mp-progress .pss-track { transition: scale .25s cubic-bezier(.2, 0, 0, 1), height .25s ease, box-shadow .25s ease; }
+
+/* ==========================================================================
+   Menus that scroll: glide with a spring-free ease, fade only where there is
+   more to see, and show a bouncing arrow while rows continue below.
+   ========================================================================== */
+@property --mt { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --mb { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+.set-root-wrap, .set-list-wrap {
+  --mt: 0px; --mb: 0px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 var(--mt), #000 calc(100% - var(--mb)), transparent 100%) !important;
+  mask-image: linear-gradient(180deg, transparent 0, #000 var(--mt), #000 calc(100% - var(--mb)), transparent 100%) !important;
+  transition-property: transform, --mt, --mb;
+}
+.set-root-wrap.fade-top { --mt: 4rem; }
+.set-list-wrap.fade-top { --mt: 9rem; }
+.set-root-wrap.more-below { --mb: 6rem; }
+.set-list-wrap.more-below { --mb: 7rem; }
+
+.set-root-list, .set-list {
+  transition: transform calc(0.46s * var(--spd)) cubic-bezier(0.22, 0.8, 0.2, 1) !important;
+}
+
+/* "More below" arrow: drawn on the unmasked parent so the fade doesn't hide it */
+.set-root::after, .set-page::after {
+  content: "";
+  position: absolute; display: block;
+  width: 1.7rem; height: 1.7rem;
+  bottom: 9.8rem;
+  border-right: .3rem solid rgba(255,255,255,.85); border-bottom: .3rem solid rgba(255,255,255,.85);
+  border-radius: .2rem;
+  transform: rotate(45deg);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.set-root::after { left: calc(96.3rem - .85rem); }
+.set-page::after { left: calc(63.7rem + (100% - 80.2rem) / 2 - .85rem); }
+.set-root:has(.set-root-wrap.more-below)::after,
+.set-page:has(.set-list-wrap.more-below)::after {
+  opacity: .9;
+  animation: moreBelow 1.5s ease-in-out infinite;
+}
+.settings-view.in-page .set-root::after, .settings-view:not(.in-page) .set-page::after { opacity: 0 !important; animation: none; }
+@keyframes moreBelow { 0%, 100% { translate: 0 -.5rem; } 50% { translate: 0 .5rem; } }
+body.reduce-motion .set-root::after, body.reduce-motion .set-page::after { animation: none !important; }
+
+/* Scroll bar thumb glides too */
+.set-scrollbar i { transition: transform calc(0.46s * var(--spd)) cubic-bezier(0.22, 0.8, 0.2, 1), height .3s ease !important; }
+
+/* Other scrolling menus: native smooth scroll + soft edges */
+.menu-panel, .menu-list, .qp-rows, .fb-list-wrap, .dl-list { scroll-behavior: smooth; }
+
+/* ==========================================================================
+   Section list on the side of Settings pages: clipped box that scrolls
+   ========================================================================== */
+.set-nav {
+  left: 15.2rem !important; width: 42.2rem !important;
+  bottom: 9rem; overflow: hidden;
+  --mt: 0px; --mb: 0px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 var(--mt), #000 calc(100% - var(--mb)), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 var(--mt), #000 calc(100% - var(--mb)), transparent 100%);
+}
+.set-nav.fade-top { --mt: 6rem; }
+.set-nav.more-below { --mb: 7rem; }
+.set-nav-inner {
+  display: flex; flex-direction: column; gap: 1.6rem; padding-bottom: 4rem;
+  transition: transform calc(0.46s * var(--spd)) cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+.set-nav .set-nav-item { margin-left: 0 !important; flex: none; }
+.set-page::before {
+  content: ""; position: absolute; display: block;
+  left: calc(36.3rem - .85rem); bottom: 9.8rem; width: 1.7rem; height: 1.7rem;
+  border-right: .3rem solid rgba(255,255,255,.85); border-bottom: .3rem solid rgba(255,255,255,.85);
+  border-radius: .2rem; transform: rotate(45deg); opacity: 0; pointer-events: none; transition: opacity .3s ease;
+}
+.set-page:has(.set-nav.more-below)::before { opacity: .9; animation: moreBelow 1.5s ease-in-out infinite; }
+.settings-view:not(.in-page) .set-page::before { opacity: 0 !important; animation: none; }
+body.reduce-motion .set-page::before { animation: none !important; }
+
+/* ==========================================================================
+   One glass for every card: same blur, see-through tint, edge and highlight
+   as the choice pop-ups (the options menu).
+   ========================================================================== */
+.menu-panel, .dialog, .qm-card, .qm-panel, .fp-panel, .cm-panel, .search-panel, .lib-filter-panel, .toast, .hub-card, .card {
+  background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.05) 60%), rgba(40,44,66,.27) !important;
+  -webkit-backdrop-filter: blur(2.2rem) saturate(1.3) !important; backdrop-filter: blur(2.2rem) saturate(1.3) !important;
+  border: .1rem solid rgba(255,255,255,.24) !important;
+  box-shadow: 0 2.4rem 7rem rgba(0,0,0,.4), inset 0 .1rem 0 rgba(255,255,255,.3) !important;
+}
+.hub-btn:not(.focused) {
+  background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.05) 60%), rgba(40,44,66,.27) !important;
+  -webkit-backdrop-filter: blur(2.2rem) saturate(1.3); backdrop-filter: blur(2.2rem) saturate(1.3);
+  border: .1rem solid rgba(255,255,255,.24); box-shadow: inset 0 .1rem 0 rgba(255,255,255,.3);
+}
+/* Focused: the same glass, a little brighter (not a flat grey) */
+.hub-btn.focused, .hub-card.focused {
+  background: linear-gradient(160deg, rgba(255,255,255,.34), rgba(255,255,255,.14) 60%), rgba(70,76,104,.36) !important;
+  -webkit-backdrop-filter: blur(2.2rem) saturate(1.3); backdrop-filter: blur(2.2rem) saturate(1.3);
+}
+/* Cards inside a card (rows, thumbnails) stay clear so the glass isn't doubled */
+.menu-panel .menu-item, .qm-panel .qp-row, .dialog .dlg-btn { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.qm-panel .qp-row:not(.focused):not(.editing) { background: transparent; }
+
+/* ==========================================================================
+   Closing: the glass used to vanish at once (an ancestor fading its opacity
+   switches the blur off). Keep the overlay fully opaque, fade only the card
+   and the dim, and give the exit a longer, eased motion.
+   ========================================================================== */
+.menu-overlay, .dialog-overlay, .menu-overlay.closing, .dialog-overlay.closing { opacity: 1 !important; }
+.dialog-overlay { background-color: rgba(0,0,0,0); transition: background-color .3s ease; }
+.dialog-overlay.open { background-color: rgba(0,0,0,.35); }
+.overlay.closing { background-color: rgba(0,0,0,0) !important; transition: background-color .3s ease !important; }
+/* The old rules set opacity/transform with !important, which beats any keyframe animation,
+   so use a transition to those end states instead (transitions win over !important). */
+.overlay.closing .dialog, .overlay.closing .menu-panel, .overlay.closing .qm-card,
+.overlay.closing .fp-panel, .overlay.closing .cm-panel,
+.menu-overlay.closing .menu-panel, .menu-overlay.closing .fp-panel, .menu-overlay.closing .cm-panel {
+  animation: none !important;
+  opacity: 0 !important;
+  transform: translateY(1.8rem) scale(.94) !important;
+  transition: opacity .3s cubic-bezier(.4, 0, .2, 1), transform .3s cubic-bezier(.4, 0, .2, 1) !important;
+}
+.qm-panel.out { animation: qmPanelOut calc(.22s * var(--spd)) cubic-bezier(.4, 0, 1, 1) both !important; }
+@keyframes qmPanelIn { from { opacity: 0; transform: translateY(2.4rem) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes qmPanelOut { to { opacity: 0; transform: translateY(1.6rem) scale(.98); } }
+
+/* Rows slide up one after another, like the settings lists */
+.qm-panel .qp-row, .qm-panel .mp { animation: ps5RiseIn calc(.4s * var(--spd)) cubic-bezier(.2, 0, 0, 1) both; }
+.qm-panel .qp-row:nth-child(2) { animation-delay: .03s; } .qm-panel .qp-row:nth-child(3) { animation-delay: .06s; }
+.qm-panel .qp-row:nth-child(4) { animation-delay: .09s; } .qm-panel .qp-row:nth-child(n+5) { animation-delay: .12s; }
+.qm-panel .qp-row { --fx-r: var(--sharp); border-radius: var(--sharp) !important; transition: background .2s, box-shadow .25s, scale .25s cubic-bezier(.2, 0, 0, 1); }
+
+/* Mixed Arabic / English titles keep their natural order and alignment */
+.mp-title, .mp-artist, .mp-app { unicode-bidi: plaintext; text-align: start; }
+html.lang-rtl .mp { direction: rtl; }
+html.lang-rtl .mp-time { direction: ltr; }
+.qm-panel { overflow-x: hidden; }
+
+/* Slider rows: focus shows a soft ring only; knob grows and track thickens while editing (after X) */
+.qm-panel:has(.qp-proxy.focused:not(.editing)) .mp-progress .pss-knob { box-shadow: 0 0 0 .2rem rgba(255,255,255,.55); }
+.qm-panel .qp-row.editing { box-shadow: inset 0 0 0 .22rem #fff, 0 0 2.4rem rgba(120,170,255,.28); background: rgba(255,255,255,.12); }
+.mp-progress .pss-knob, .mp-progress .pss-track { transition: scale .25s cubic-bezier(.2, 0, 0, 1), height .25s ease, box-shadow .25s ease; }
+
+/* ==========================================================================
+   Menus that scroll: glide with a spring-free ease, fade only where there is
+   more to see, and show a bouncing arrow while rows continue below.
+   ========================================================================== */
+@property --mt { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --mb { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+.set-root-wrap, .set-list-wrap {
+  --mt: 0px; --mb: 0px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 var(--mt), #000 calc(100% - var(--mb)), transparent 100%) !important;
+  mask-image: linear-gradient(180deg, transparent 0, #000 var(--mt), #000 calc(100% - var(--mb)), transparent 100%) !important;
+  transition-property: transform, --mt, --mb;
+}
+.set-root-wrap.fade-top { --mt: 4rem; }
+.set-list-wrap.fade-top { --mt: 9rem; }
+.set-root-wrap.more-below { --mb: 6rem; }
+.set-list-wrap.more-below { --mb: 7rem; }
+
+.set-root-list, .set-list {
+  transition: transform calc(0.46s * var(--spd)) cubic-bezier(0.22, 0.8, 0.2, 1) !important;
+}
+
+/* "More below" arrow: drawn on the unmasked parent so the fade doesn't hide it */
+.set-root::after, .set-page::after {
+  content: "";
+  position: absolute; display: block;
+  width: 1.7rem; height: 1.7rem;
+  bottom: 9.8rem;
+  border-right: .3rem solid rgba(255,255,255,.85); border-bottom: .3rem solid rgba(255,255,255,.85);
+  border-radius: .2rem;
+  transform: rotate(45deg);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.set-root::after { left: calc(96.3rem - .85rem); }
+.set-page::after { left: calc(63.7rem + (100% - 80.2rem) / 2 - .85rem); }
+.set-root:has(.set-root-wrap.more-below)::after,
+.set-page:has(.set-list-wrap.more-below)::after {
+  opacity: .9;
+  animation: moreBelow 1.5s ease-in-out infinite;
+}
+.settings-view.in-page .set-root::after, .settings-view:not(.in-page) .set-page::after { opacity: 0 !important; animation: none; }
+@keyframes moreBelow { 0%, 100% { translate: 0 -.5rem; } 50% { translate: 0 .5rem; } }
+body.reduce-motion .set-root::after, body.reduce-motion .set-page::after { animation: none !important; }
+
+/* Scroll bar thumb glides too */
+.set-scrollbar i { transition: transform calc(0.46s * var(--spd)) cubic-bezier(0.22, 0.8, 0.2, 1), height .3s ease !important; }
+
+/* Other scrolling menus: native smooth scroll + soft edges */
+.menu-panel, .menu-list, .qp-rows, .fb-list-wrap, .dl-list { scroll-behavior: smooth; }
+
+/* ==========================================================================
+   Section list on the side of Settings pages: clipped box that scrolls
+   ========================================================================== */
+.set-nav {
+  left: 15.2rem !important; width: 42.2rem !important;
+  bottom: 9rem; overflow: hidden;
+  --mt: 0px; --mb: 0px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 var(--mt), #000 calc(100% - var(--mb)), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 var(--mt), #000 calc(100% - var(--mb)), transparent 100%);
+}
+.set-nav.fade-top { --mt: 6rem; }
+.set-nav.more-below { --mb: 7rem; }
+.set-nav-inner {
+  display: flex; flex-direction: column; gap: 1.6rem; padding-bottom: 4rem;
+  transition: transform calc(0.46s * var(--spd)) cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+.set-nav .set-nav-item { margin-left: 0 !important; flex: none; }
+.set-page::before {
+  content: ""; position: absolute; display: block;
+  left: calc(36.3rem - .85rem); bottom: 9.8rem; width: 1.7rem; height: 1.7rem;
+  border-right: .3rem solid rgba(255,255,255,.85); border-bottom: .3rem solid rgba(255,255,255,.85);
+  border-radius: .2rem; transform: rotate(45deg); opacity: 0; pointer-events: none; transition: opacity .3s ease;
+}
+.set-page:has(.set-nav.more-below)::before { opacity: .9; animation: moreBelow 1.5s ease-in-out infinite; }
+.settings-view:not(.in-page) .set-page::before { opacity: 0 !important; animation: none; }
+body.reduce-motion .set-page::before { animation: none !important; }
+
+/* ==========================================================================
+   One glass for every card: same blur, see-through tint, edge and highlight
+   as the choice pop-ups (the options menu).
+   ========================================================================== */
+.menu-panel, .dialog, .qm-card, .qm-panel, .fp-panel, .cm-panel, .search-panel, .lib-filter-panel, .toast, .hub-card, .card {
+  background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.05) 60%), rgba(40,44,66,.27) !important;
+  -webkit-backdrop-filter: blur(2.2rem) saturate(1.3) !important; backdrop-filter: blur(2.2rem) saturate(1.3) !important;
+  border: .1rem solid rgba(255,255,255,.24) !important;
+  box-shadow: 0 2.4rem 7rem rgba(0,0,0,.4), inset 0 .1rem 0 rgba(255,255,255,.3) !important;
+}
+.hub-btn:not(.focused) {
+  background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.05) 60%), rgba(40,44,66,.27) !important;
+  -webkit-backdrop-filter: blur(2.2rem) saturate(1.3); backdrop-filter: blur(2.2rem) saturate(1.3);
+  border: .1rem solid rgba(255,255,255,.24); box-shadow: inset 0 .1rem 0 rgba(255,255,255,.3);
+}
+/* Focused: the same glass, a little brighter (not a flat grey) */
+.hub-btn.focused, .hub-card.focused {
+  background: linear-gradient(160deg, rgba(255,255,255,.34), rgba(255,255,255,.14) 60%), rgba(70,76,104,.36) !important;
+  -webkit-backdrop-filter: blur(2.2rem) saturate(1.3); backdrop-filter: blur(2.2rem) saturate(1.3);
+}
+/* Cards inside a card (rows, thumbnails) stay clear so the glass isn't doubled */
+.menu-panel .menu-item, .qm-panel .qp-row, .dialog .dlg-btn { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.qm-panel .qp-row:not(.focused):not(.editing) { background: transparent; }
+
+/* ==========================================================================
+   Closing: the glass used to vanish at once (an ancestor fading its opacity
+   switches the blur off). Keep the overlay fully opaque, fade only the card
+   and the dim, and give the exit a longer, eased motion.
+   ========================================================================== */
+.menu-overlay, .dialog-overlay, .menu-overlay.closing, .dialog-overlay.closing { opacity: 1 !important; }
+.dialog-overlay { background-color: rgba(0,0,0,0); transition: background-color .3s ease; }
+.dialog-overlay.open { background-color: rgba(0,0,0,.35); }
+.overlay.closing { background-color: rgba(0,0,0,0) !important; transition: background-color .3s ease !important; }
+@keyframes ps5PopOut2 { 0% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(1.8rem) scale(.94); } }
+.overlay.closing .dialog, .overlay.closing .menu-panel, .overlay.closing .qm-card,
+.overlay.closing .fp-panel, .overlay.closing .cm-panel {
+  animation: ps5PopOut2 .3s cubic-bezier(.4, 0, .2, 1) both !important;
+  transition: none !important;
+}
+.qm-panel.out { animation: qmPanelOut .3s cubic-bezier(.4, 0, .2, 1) both !important; }
+.toast.out { transition-duration: .3s !important; }
+
+
+/* ==========================================================================
+   Settings section list: text centred in its box, nothing cut at the sides
+   ========================================================================== */
+.set-nav { left: 14rem !important; width: 44.6rem !important; padding: 0 1.2rem; box-sizing: border-box; }
+.set-nav-inner { width: 100%; }
+.set-nav .set-nav-item {
+  display: flex; align-items: center; box-sizing: border-box; width: 100%;
+  min-height: 8.4rem; padding: 0 2.2rem !important; line-height: 1.25 !important;
+  white-space: nowrap; overflow: visible; text-align: start;
+}
+.set-page::before { left: calc(36.3rem - .85rem); }
+
+/* ==========================================================================
+   Home / game art: no darkening filters over the picture
+   ========================================================================== */
+#hero-bg .hero-layer:not(.blur-art) { filter: none !important; }
+#hero-bg .hero-scrim {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 66%, rgba(0,0,0,.42) 100%),
+    linear-gradient(90deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,0) 42%) !important;
+}
+.tile-art, .tile-art img, .tile-art .ta-img, .tile-art .ta-bg { filter: none !important; opacity: 1; }
+.tile-art.composite .ta-shade { opacity: .35; }

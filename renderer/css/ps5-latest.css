@@ -1,0 +1,233 @@
+/*
+ * PS5 latest-look refinement layer
+ * Visual-only overrides: all existing launcher behavior and navigation remain intact.
+ */
+:root {
+  --font: "SST UI", "PS Sans", "Segoe UI", system-ui, sans-serif;
+  --blue: #287cff;
+  --blue-2: #0758d8;
+  --panel: rgba(25, 28, 37, 0.88);
+  --panel-solid: #191c25;
+  --line: rgba(255, 255, 255, 0.14);
+  --ring: 0 0 0 0.22rem rgba(255,255,255,.96), 0 0 2.2rem rgba(74,145,255,.32);
+}
+
+/* PS5's cool, layered glass surfaces */
+.menu-panel,
+.dialog,
+.qm-card,
+.set-page,
+.set-nav,
+.set-list-wrap,
+.lib-filter-panel,
+.search-panel {
+  -webkit-backdrop-filter: blur(2.4rem) saturate(1.25);
+  backdrop-filter: blur(2.4rem) saturate(1.25);
+}
+
+.topbar {
+  background: linear-gradient(180deg, rgba(2,5,13,.20), transparent);
+}
+
+.tb-tab {
+  letter-spacing: 0;
+  text-shadow: 0 .15rem 1.2rem rgba(0,0,0,.22);
+}
+
+.tb-tab.active::after {
+  content: "";
+  display: block;
+  height: .22rem;
+  width: 1.8rem;
+  margin: .5rem auto 0;
+  border-radius: 1rem;
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 0 .9rem rgba(255,255,255,.3);
+}
+
+.tb-icon.focused {
+  box-shadow: 0 0 0 .2rem rgba(255,255,255,.9), 0 .6rem 2rem rgba(0,0,0,.42);
+}
+
+.tile-inner {
+  background-color: rgba(20,24,34,.92);
+}
+
+.tile.sel .tile-inner {
+  box-shadow: 0 1.2rem 3.2rem rgba(0,0,0,.48);
+}
+
+
+
+.hub-title {
+  text-shadow: 0 .25rem 2.4rem rgba(0,0,0,.62);
+}
+
+.hub-desc {
+  text-shadow: 0 .15rem 1.2rem rgba(0,0,0,.75);
+}
+
+.lib-view {
+  background:
+    radial-gradient(85% 75% at 82% 0%, rgba(63,103,176,.22), transparent 65%),
+    linear-gradient(180deg, rgba(5,8,16,.84), rgba(2,3,8,.96));
+}
+
+.lib-tile {
+  border-radius: .35rem;
+}
+
+.lib-tile.focused .lt-art {
+  outline: .18rem solid rgba(255,255,255,.96);
+  outline-offset: .2rem;
+  box-shadow: 0 1.4rem 3.6rem rgba(0,0,0,.58), 0 0 2rem rgba(65,135,255,.18);
+}
+
+.qm-shade {
+  background: linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.44) 52%, rgba(0,0,0,.76));
+  -webkit-backdrop-filter: blur(.35rem);
+  backdrop-filter: blur(.35rem);
+}
+
+.qm-card {
+  border: .1rem solid rgba(255,255,255,.08);
+  background: rgba(25,28,36,.91);
+}
+
+.qm-card.focused {
+  border-color: rgba(255,255,255,.58);
+  box-shadow: 0 0 0 .18rem rgba(255,255,255,.95), 0 1.2rem 3.5rem rgba(0,0,0,.5);
+}
+
+.qm-btn.focused {
+  box-shadow: 0 0 0 .22rem #fff, 0 0 2.5rem rgba(70,140,255,.3);
+}
+
+.menu-panel {
+  background: rgba(25,28,36,.96);
+  border: .1rem solid rgba(255,255,255,.08);
+}
+
+.menu-item.focused {
+  background: rgba(255,255,255,.12);
+  box-shadow: inset 0 0 0 .16rem rgba(255,255,255,.9);
+}
+
+.dialog {
+  background: rgba(25,28,36,.97);
+  border: .1rem solid rgba(255,255,255,.08);
+}
+
+.dlg-btn.focused {
+  background: #f5f7fb;
+  color: #10131a;
+  box-shadow: 0 0 0 .2rem rgba(255,255,255,.34), 0 .5rem 1.8rem rgba(0,0,0,.32);
+}
+
+/* Better scaling at common desktop and TV resolutions */
+@media (max-aspect-ratio: 4/3) {
+  .topbar { padding-left: 4rem; padding-right: 4rem; }
+  .lib-grid { padding-left: 10rem; padding-right: 10rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* Keep Arabic text readable while preserving the PS5's left-to-right layout. */
+[lang="ar"] body,
+body.lang-ar {
+  font-family: "Segoe UI", "Tahoma", "Arial", sans-serif;
+}
+
+/* ================= PS5 feel + smoothness pass ================= */
+html.lang-rtl body, html[lang="ar"] body { font-family: "Cairo", var(--font); letter-spacing: 0; }
+html[lang="ar"] * { letter-spacing: 0 !important; }
+
+/* GPU-friendly, snappy motion */
+#views, .view, .tile, .lib-tile, .hero-layer, #hero-bg { backface-visibility: hidden; transform: translateZ(0); }
+.tile, .lib-tile, .tb-tab, .set-row, .qm-item, .hub-btn { will-change: transform, opacity; contain: layout style; }
+.tile, .lib-tile, .tb-tab, .set-row, .qm-item, .hub-btn {
+  transition-duration: calc(0.16s * var(--spd)) !important;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+.tb-tab.active { text-shadow: 0 0 1.4rem rgba(255, 255, 255, 0.35); }
+
+/* Panels: frosted dark glass like the console menus */
+.card, .settings-panel, .qm-panel, .dialog {
+  background: rgba(24, 26, 33, 0.82);
+  backdrop-filter: blur(2.4rem) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.reduce-motion * { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
+
+/* Arabic: Cairo for everything (Latin too), better line height */
+@font-face { font-family: "Cairo All"; src: url("../fonts/cairo/Cairo-Variable.ttf") format("truetype"); font-weight: 200 1000; font-display: swap; }
+html.lang-rtl, html.lang-rtl.font-ps, html.lang-rtl.font-sst { --font: "Cairo All", "Cairo", "Segoe UI", sans-serif; }
+html.lang-rtl body { line-height: 1.45; font-weight: 500; }
+html.lang-rtl .hub-title, html.lang-rtl .card-head { font-weight: 600; }
+
+/* Game cards: size now really changes (3 / 5 / 7 per row, fills the screen) */
+.lib-grid { grid-template-columns: repeat(var(--lib-cols, 5), minmax(0, 1fr)) !important; padding-left: 8rem !important; padding-right: 8rem !important; }
+.lib-tile { width: 100% !important; height: auto !important; aspect-ratio: 1 / 1; }
+
+/* ===== Pro features ===== */
+.pro-no-clock .tb-clock { display: none !important; }
+.pro-status { display: flex; align-items: center; gap: 1.2rem; font-size: 2rem; color: var(--text-2); margin-inline-end: 2rem; white-space: nowrap; }
+#pro-widget { display: none !important; position: fixed; top: 11rem; inset-inline-start: 8rem; z-index: 5; pointer-events: none; text-shadow: 0 .2rem 1.2rem rgba(0,0,0,.6); }
+#pro-widget .pw-time { font-size: 6rem; font-weight: 300; line-height: 1.1; }
+#pro-widget .pw-date, #pro-widget .pw-wx { font-size: 2.2rem; color: var(--text-2); }
+#overlays { position: relative; z-index: 100000; }
+.pro-yt { position: fixed; width: 2px; height: 2px; opacity: 0; pointer-events: none; left: -10px; bottom: 0; border: 0; }
+.pro-h { font-size: 2.4rem; font-weight: 600; margin: 1.6rem 0 .6rem; }
+.pro-row { display: flex; justify-content: space-between; gap: 2rem; padding: .5rem 0; border-bottom: 1px solid var(--line); }
+.pro-row small { color: var(--text-3); }
+.pro-pre { white-space: pre-wrap; line-height: 1.6; color: var(--text-2); }
+.pro-mc { display: inline-block; padding: .1rem 1rem; border-radius: .6rem; font-weight: 700; color: #000; margin-inline-end: .8rem; }
+.pro-mc.g { background: #66cc33; } .pro-mc.y { background: #ffcc33; } .pro-mc.r { background: #ff6874; }
+.pro-modal { position: fixed; inset: 0; z-index: 100001; background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; }
+.pm-box { width: 70rem; max-height: 90vh; overflow: auto; background: #1d1f25; border-radius: 2rem; padding: 3rem; }
+.pm-box h2 { font-size: 3rem; margin-bottom: .6rem; } .pm-hint { color: var(--text-3); margin-bottom: 1.6rem; font-size: 1.8rem; }
+.pm-list { list-style: none; display: grid; gap: .8rem; }
+.pm-list li { display: flex; align-items: center; gap: 1.2rem; padding: 1rem 1.6rem; background: rgba(255,255,255,.08); border-radius: 1rem; font-size: 2.2rem; cursor: grab; }
+.pm-list li.drag { opacity: .4; } .pm-name { flex: 1; } .pm-grip { color: var(--text-3); }
+.pm-box button { font: inherit; font-size: 2rem; color: #fff; background: rgba(255,255,255,.12); border: 0; border-radius: .8rem; padding: .4rem 1.2rem; cursor: pointer; }
+.pm-box button:hover { background: rgba(255,255,255,.3); }
+.pm-actions { display: flex; gap: 1.2rem; justify-content: flex-end; margin-top: 2rem; }
+.pm-box .primary { background: #fff; color: #000; }
+
+/* PIN pad */
+.pro-lock { position: fixed; inset: 0; z-index: 390; background: rgba(5, 7, 12, .98); }
+.pin-dialog { width: 40rem; min-width: 0; max-width: 90vw; display: flex; flex-direction: column; align-items: center; gap: 1.2rem; padding: 3rem 3.4rem 2.6rem; border-radius: 2rem; text-align: center; }
+.pin-dialog .pp-user .avatar { width: 10rem; height: 10rem; }
+.pin-dialog .pp-lock svg { width: 3.6rem; height: 3.6rem; fill: none; stroke: currentColor; stroke-width: 1.8; opacity: .85; }
+.pin-dialog .pp-name { font-size: 1.8rem; opacity: .7; }
+.pin-dialog .pp-title { font-size: 2.4rem; font-weight: 600; line-height: 1.2; }
+.pin-dialog .pp-dots { display: flex; gap: 1.2rem; height: 2.4rem; align-items: center; justify-content: center; }
+.pin-dialog .pp-dot { width: 1.4rem; height: 1.4rem; border-radius: 50%; border: .25rem solid rgba(255, 255, 255, .7); }
+.pin-dialog .pp-dot.on { background: #fff; }
+.pin-dialog .pp-bul { font-size: 3rem; letter-spacing: .8rem; }
+.pin-dialog .pp-msg { min-height: 2rem; color: #ff6b6b; font-size: 1.6rem; }
+.pin-dialog .pp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; width: 100%; }
+.pin-dialog .pp-key { height: 6.6rem; border: 0; border-radius: 1.4rem; background: rgba(255, 255, 255, .1); color: #fff; font-size: 3rem; font-family: inherit; cursor: pointer; }
+.pin-dialog .pp-key.small { font-size: 1.8rem; }
+.pin-dialog .pp-key.wide { grid-column: 1 / -1; height: 5.2rem; }
+.pin-dialog .pp-key.focused, .pin-dialog .pp-key:hover { background: #fff; color: #0b0d14; }
+.pin-dialog .pp-hints { display: flex; gap: 2rem; font-size: 1.5rem; opacity: .7; }
+.shake .pin-dialog { animation: ppShake .45s; }
+@keyframes ppShake { 0%, 100% { translate: 0; } 20% { translate: -1.4vh; } 40% { translate: 1.4vh; } 60% { translate: -1vh; } 80% { translate: 1vh; } }
+
+.pin-dialog .pp-key.done { background: #0070d1; color: #fff; }
+.pin-dialog .pp-key.done.focused, .pin-dialog .pp-key.done:hover { background: #3d9bff; color: #fff; }
+
+/* Smaller, less rounded choice menus */
+.menu-panel { min-width: 34rem; max-width: 50rem; padding: .8rem; border-radius: .9rem; }
+.menu-item { min-height: 5rem; padding: .5rem 1.3rem; gap: 1.3rem; border-radius: .5rem; font-size: 2rem; --fx-r: .5rem; }
+.mi-icon { width: 2.3rem; font-size: 2.2rem; }
+.mi-hint { font-size: 1.6rem; }
+.menu-title { font-size: 2rem; }

@@ -1,0 +1,1130 @@
+/* ------------------------------------------------------------------ */
+/* Game Library (PS5 layout)                                           */
+/* ------------------------------------------------------------------ */
+.lib-view {
+  background:
+    radial-gradient(70% 80% at 85% 10%, rgba(70, 80, 110, 0.18), transparent 60%),
+    linear-gradient(180deg, rgba(4, 5, 10, 0.86), rgba(2, 3, 7, 0.94));
+}
+
+.lib-header {
+  position: absolute;
+  top: 4.8rem;
+  left: 4.8rem;
+  display: flex;
+  align-items: center;
+  gap: 4.6rem;
+  animation: fadeIn 0.5s var(--ease) both;
+}
+
+.lib-badge {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.07);
+  display: grid;
+  place-items: center;
+  font-size: 4.4rem;
+  color: #fff;
+}
+
+.lib-title {
+  font-size: 3.2rem;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+
+.lib-tabs {
+  position: absolute;
+  top: 13.4rem;
+  left: 17.4rem;
+  display: flex;
+  gap: 2.4rem;
+  animation: fadeIn 0.5s var(--ease) 0.05s both;
+}
+
+.lib-tab {
+  position: relative;
+  font-size: 3.2rem;
+  font-weight: 300;
+  padding: 0.6rem 2rem;
+  margin-left: -2rem;
+  margin-right: 2rem;
+  border-radius: 1rem;
+  color: var(--text-4);
+  transition: color 0.25s, background 0.25s;
+  --fx-r: 1rem;
+  --fx-gap: 0.2rem;
+  --glint: 0.16;
+}
+
+.lib-tab.active {
+  color: #fff;
+}
+
+.lib-tab.focused {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Round sort / filter button left of the grid */
+.lib-filter {
+  position: absolute;
+  top: 33.6rem;
+  left: 5.3rem;
+  width: 7.4rem;
+  height: 7.4rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 3.4rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.2s, color 0.2s, transform 0.3s var(--ease-out), top 0.5s var(--ease-out);
+  --fx-r: 3.7rem;
+  --fx-gap: 0.35rem;
+  --glint: 0.3;
+}
+
+.lib-filter.focused {
+  background: rgba(255, 255, 255, 0.9);
+  color: #111;
+  transform: scale(1.04);
+}
+
+
+.lib-filter.filtered {
+  box-shadow: inset 0 0 0 0.25rem var(--blue);
+}
+
+/* Grid */
+.lib-grid-wrap {
+  position: absolute;
+  top: 25.2rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 2.2rem, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 2.2rem, #000 100%);
+}
+
+.lib-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--lib-cols, 5), var(--lib-tile, 29.6rem));
+  gap: var(--lib-gap, 2.5rem);
+  padding: 2.8rem 17.4rem 14rem;
+  transition: transform calc(0.5s * var(--spd)) var(--ease-out);
+}
+
+.lib-tile {
+  position: relative;
+  display: block;
+  width: var(--lib-tile, 29.6rem);
+  height: var(--lib-tile, 29.6rem);
+  border-radius: 0.6rem;
+  text-align: left;
+  --fx-r: 0.6rem;
+  --fx-gap: 0.5rem;
+  --fx-w: 0.3rem;
+  --glint: 0.34;
+  transition: transform 0.35s var(--ease-out);
+}
+
+.lib-grid.stagger .lib-tile {
+  /* Release the animation's transform/opacity after entry instead of retaining
+     animation state on every cover throughout long scrolling sessions. */
+  animation: fadeUp 0.55s var(--ease-out) backwards;
+  animation-delay: calc(var(--i) * 22ms);
+}
+
+.lt-art {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.35);
+}
+
+.lib-tile.focused {
+  transform: scale(1.02);
+}
+
+.lib-tile.focused .lt-art {
+  box-shadow: 0 1.6rem 3.6rem rgba(0, 0, 0, 0.55);
+}
+
+/* Name + store badge, only on the focused cover */
+.lt-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 7rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.2rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.82) 100%);
+  opacity: 0;
+  transform: translateY(1.2rem);
+  transition: opacity 0.25s var(--ease), transform 0.35s var(--ease-out);
+}
+
+.lib-tile.focused .lt-info {
+  opacity: 1;
+  transform: none;
+}
+
+.lt-badge {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0.4rem 0.9rem;
+  border: 0.15rem solid rgba(255, 255, 255, 0.85);
+  border-radius: 0.3rem;
+  color: #fff;
+}
+
+.lt-name {
+  width: 100%;
+  font-size: 2.3rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lt-fav {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  color: #ffd166;
+}
+
+.lt-fav svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.lib-empty {
+  position: absolute;
+  top: 34rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  animation: fadeUp 0.5s var(--ease-out) both;
+}
+
+.le-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 5.6rem;
+  color: var(--text-2);
+  margin-bottom: 3rem;
+}
+
+.le-title {
+  font-size: 4.4rem;
+  font-weight: 300;
+}
+
+.le-text {
+  margin-top: 1.4rem;
+  font-size: 2.3rem;
+  color: var(--text-3);
+}
+
+.set-hints {
+  position: absolute;
+  right: 7rem;
+  bottom: 4.4rem;
+}
+
+.hubv-hints {
+  position: absolute;
+  right: 7rem;
+  top: 8.4rem;
+  transition: opacity 0.3s var(--ease);
+}
+
+/* Stand-alone hub view ---------------------------------------------- */
+.hub-view .hubv-scroller {
+  position: absolute;
+  inset: 0;
+  transition: transform calc(0.6s * var(--spd)) var(--ease-out);
+}
+
+.hub-view.scrolled .hubv-scroller {
+  transform: translateY(-50rem);
+}
+
+.hubv-title {
+  position: absolute;
+  top: 9rem;
+  left: 17.4rem;
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  font-size: 3rem;
+  animation: fadeUp 0.5s var(--ease-out) both;
+}
+
+.hub-view .hub-main {
+  top: 18rem;
+}
+
+.hub-view .hub-cards {
+  top: 86rem;
+}
+
+.hub-view.scrolled .hubv-hints {
+  opacity: 0;
+}
+
+
+/* A waiting update's badge goes left on library covers (the favourite star is right). */
+.lib-tile .tile-dl.available {
+  right: auto;
+  left: 1.2rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Downloads (PS5 Downloads/Uploads layout)                            */
+/* ------------------------------------------------------------------ */
+.dl-view {
+  background:
+    radial-gradient(60% 70% at 20% 0%, rgba(120, 110, 100, 0.22), transparent 60%),
+    linear-gradient(180deg, rgba(34, 33, 36, 0.96), rgba(22, 23, 27, 0.98));
+}
+
+.dl-title {
+  position: absolute;
+  top: 7.2rem;
+  left: 9.6rem;
+  font-size: 4.4rem;
+  font-weight: 300;
+  animation: fadeIn 0.5s var(--ease) both;
+}
+
+.dl-nav {
+  position: absolute;
+  top: 17.8rem;
+  left: 16.6rem;
+  width: 39.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  animation: fadeIn 0.5s var(--ease) 0.05s both;
+}
+
+.dl-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 10.4rem;
+  padding: 0 3rem;
+  border-radius: 0.4rem;
+  font-size: 3rem;
+  font-weight: 300;
+  color: var(--text-2);
+  text-align: left;
+  transition: color 0.2s, background 0.2s;
+  --fx-r: 0.4rem;
+  --fx-gap: 0.2rem;
+}
+
+.dl-nav-item.active {
+  color: #fff;
+}
+
+.dl-nav-item.focused {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+
+.dl-count {
+  font-style: normal;
+  font-size: 2.6rem;
+}
+
+.dl-nav-sep {
+  display: block;
+  height: 1px;
+  margin: 1.4rem 3rem;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.dl-list-wrap {
+  position: absolute;
+  top: 17.8rem;
+  left: 65.6rem;
+  right: 18rem;
+  bottom: 12rem;
+  overflow: hidden auto;
+  padding: 0 1rem 2rem;
+}
+
+.dl-list-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.dl-group {
+  font-size: 2.4rem;
+  color: var(--text-2);
+  padding: 1.6rem 0 1.2rem;
+}
+
+.dl-group:not(:first-child) {
+  margin-top: 2.6rem;
+}
+
+.dl-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  width: 100%;
+  padding: 1.4rem;
+  border-radius: 0.6rem;
+  text-align: left;
+  animation: fadeUp 0.45s var(--ease-out) both;
+  transition: background 0.2s;
+  --fx-r: 0.6rem;
+  --fx-gap: 0.3rem;
+}
+
+.dl-row.focused {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dl-cover {
+  flex: none;
+  width: 12.8rem;
+  height: 12.8rem;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  display: grid;
+  place-items: center;
+  font-size: 5rem;
+  color: var(--text-3);
+}
+
+.dl-cover .tile-art {
+  position: absolute;
+  inset: 0;
+}
+
+.dl-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dl-name {
+  font-size: 3.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.4rem;
+}
+
+.dl-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  font-size: 2.3rem;
+  color: var(--text-2);
+}
+
+.dl-line span:last-child {
+  white-space: nowrap;
+}
+
+.dl-line2:has(span:empty + span:empty) {
+  display: none;
+}
+
+.dl-row.error .dl-state {
+  color: #ff9a9a;
+}
+
+.dl-bar {
+  margin-top: 1rem;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.dl-bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: #fff;
+  transition: width 0.9s linear;
+}
+
+.dl-row.waiting .dl-bar i {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.dl-empty {
+  padding-top: 2rem;
+  font-size: 2.6rem;
+  color: var(--text-3);
+}
+
+.dl-hints {
+  position: absolute;
+  right: 7rem;
+  bottom: 4.4rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Media Gallery (the library's layout, 16:9 tiles in three columns)   */
+/* ------------------------------------------------------------------ */
+.gal-view {
+  background:
+    radial-gradient(70% 80% at 15% 20%, rgba(70, 80, 140, 0.2), transparent 60%),
+    linear-gradient(180deg, rgba(6, 8, 22, 0.9), rgba(3, 4, 12, 0.96));
+}
+
+.gal-view .gal-select {
+  top: 44.1rem;
+}
+
+.gal-sortlabel,
+.gal-album-title {
+  position: absolute;
+  top: 28.2rem;
+  font-size: 2.6rem;
+  color: var(--text-2);
+  animation: fadeIn 0.5s var(--ease) 0.1s both;
+}
+
+.gal-sortlabel {
+  right: 17.4rem;
+}
+
+.gal-album-title {
+  left: 17.4rem;
+  color: #fff;
+  font-size: 2.8rem;
+}
+
+.gal-view .gal-grid-wrap {
+  top: 30.8rem;
+}
+
+.gal-view .gal-grid {
+  grid-template-columns: repeat(3, 50.4rem);
+  gap: 3.3rem 3.2rem;
+}
+
+.gal-tile {
+  position: relative;
+  display: block;
+  width: 50.4rem;
+  height: 28.35rem;
+  border-radius: 0.6rem;
+  text-align: left;
+  --fx-r: 0.6rem;
+  --fx-gap: 0.5rem;
+  --fx-w: 0.3rem;
+  --glint: 0.3;
+  transition: transform 0.35s var(--ease-out);
+}
+
+.gal-grid.stagger .gal-tile {
+  animation: fadeUp 0.55s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 26ms);
+}
+
+.gal-tile.focused {
+  transform: scale(1.02);
+}
+
+.gt-art {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.35);
+}
+
+.gt-art > img,
+.gt-art > video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.gt-dur {
+  position: absolute;
+  top: 2.2rem;
+  left: 2.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.62);
+  font-size: 2rem;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+
+.gt-play {
+  position: absolute;
+  left: 2.4rem;
+  bottom: 2.2rem;
+  width: 3.8rem;
+  height: 3.8rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.7rem;
+  color: #1a1c22;
+  background: rgba(255, 255, 255, 0.86);
+  transition: opacity 0.25s var(--ease);
+}
+
+.gt-play svg {
+  margin-left: 0.25rem;
+  stroke-width: 0;
+}
+
+.gt-fav {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffd166;
+  font-size: 2rem;
+}
+
+/* Game and date, on the focused tile (always on albums) */
+.gt-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6rem 2.4rem 2rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.8) 100%);
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 0.25s var(--ease), transform 0.35s var(--ease-out);
+}
+
+.gal-tile.focused .gt-info,
+.gt-info.always {
+  opacity: 1;
+  transform: none;
+}
+
+.gal-tile.focused .gt-play {
+  opacity: 0;
+}
+
+.gt-game {
+  font-size: 2.3rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gt-meta {
+  flex: none;
+  font-size: 1.9rem;
+  color: var(--text-2);
+}
+
+.gal-album .gt-info {
+  padding-left: 2.4rem;
+}
+
+.gal-hints {
+  position: absolute;
+  right: 7rem;
+  bottom: 4.4rem;
+}
+
+/* Select Media ------------------------------------------------------- */
+.sel-overlay {
+  background:
+    radial-gradient(70% 80% at 15% 20%, rgba(70, 80, 140, 0.2), transparent 60%),
+    linear-gradient(180deg, #060816, #03040c);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+
+.sel-overlay.open {
+  opacity: 1;
+}
+
+.sel-title {
+  position: absolute;
+  top: 7.4rem;
+  left: 9.6rem;
+  font-size: 4.4rem;
+  font-weight: 300;
+}
+
+.sel-grid-wrap {
+  position: absolute;
+  top: 18.4rem;
+  left: 0;
+  width: 137rem;
+  bottom: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 2.2rem, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 2.2rem, #000 100%);
+}
+
+.sel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 37rem);
+  gap: 3.3rem;
+  padding: 2.2rem 0 14rem 17.2rem;
+  transition: transform calc(0.45s * var(--spd)) var(--ease-out);
+}
+
+.sel-tile {
+  width: 37rem;
+  height: 20.8rem;
+}
+
+.sel-tile .gt-dur {
+  top: 1.8rem;
+  left: 7.4rem;
+}
+
+.sel-tile .gt-play {
+  left: 2rem;
+  bottom: 1.8rem;
+}
+
+.gt-check {
+  position: absolute;
+  top: 1.8rem;
+  left: 2rem;
+  width: 3.8rem;
+  height: 3.8rem;
+  border-radius: 0.6rem;
+  display: grid;
+  place-items: center;
+  font-size: 2.6rem;
+  color: transparent;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 0.22rem rgba(255, 255, 255, 0.75);
+  transition: background 0.15s, color 0.15s;
+}
+
+.sel-tile.on .gt-check {
+  background: #fff;
+  color: #111;
+  box-shadow: none;
+}
+
+.sel-tile.on .gt-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 0.3rem rgba(255, 255, 255, 0.9);
+}
+
+.sel-side {
+  position: absolute;
+  top: 20.6rem;
+  left: 139.7rem;
+  width: 35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+}
+
+.sel-btn,
+.sel-count {
+  height: 7.2rem;
+  border-radius: 3.6rem;
+  display: grid;
+  place-items: center;
+  font-size: 2.8rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.15s, color 0.15s;
+  --fx-r: 3.6rem;
+}
+
+.sel-btn.focused {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sel-btn.disabled,
+.sel-count {
+  color: var(--text-4);
+}
+
+.sel-side .sel-btn:last-child {
+  margin-top: 9.6rem;
+}
+
+/* Owned on Steam, not on this PC: the cover a little dimmed, a download mark. */
+.lib-tile.not-installed .lt-art .tile-art {
+  filter: saturate(0.55) brightness(0.72);
+  transition: filter 0.3s var(--ease);
+}
+
+.lib-tile.not-installed.focused .lt-art .tile-art {
+  filter: none;
+}
+
+.lt-cloud {
+  position: absolute;
+  left: 1.2rem;
+  top: 1.2rem;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+/* A download already under way shows its bar instead. */
+.lib-tile:has(.tile-dl.active) .lt-cloud,
+.lib-tile:has(.tile-dl.available) .lt-cloud {
+  display: none;
+}
+
+/* Settings › Storage › Games and Apps (PS5 "Items You Can Delete") -------- */
+.sel-overlay.ga-overlay {
+  background: none;
+}
+
+.settings-view > * {
+  transition: opacity 0.25s var(--ease);
+}
+
+body.ga-open .settings-view > :not(.set-bg) {
+  opacity: 0;
+}
+.ga-tabs {
+  position: absolute;
+  top: 18rem;
+  left: 16.8rem;
+  display: flex;
+  gap: 2.4rem;
+}
+
+.ga-tab {
+  font-size: 2.9rem;
+  border: 0.2rem solid transparent;
+}
+
+.ga-tab.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+.ga-sortrow {
+  position: absolute;
+  top: 27.2rem;
+  left: 70rem;
+  width: 55.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3.2rem;
+}
+
+.ga-sortlabel {
+  font-size: 2.9rem;
+  font-weight: 300;
+  color: var(--text-2);
+}
+
+.ga-sort {
+  width: 38.4rem;
+  height: 6.4rem;
+  padding: 0 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 2.9rem;
+  font-weight: 300;
+  border-radius: 0.8rem 0.8rem 0 0;
+  box-shadow: inset 0 -0.2rem 0 rgba(255, 255, 255, 0.35);
+  --fx-r: 0.8rem;
+}
+
+.ga-sort svg {
+  width: 2.6rem;
+  height: 2.6rem;
+  color: var(--text-2);
+}
+
+.ga-sort.focused {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ga-list-wrap {
+  position: absolute;
+  top: 35.8rem;
+  left: 16.6rem;
+  width: 112rem;
+  bottom: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 1.6rem, #000 85%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 1.6rem, #000 85%, transparent 100%);
+}
+
+.ga-list {
+  padding: 1.2rem 0 16rem;
+  transition: transform calc(0.35s * var(--spd)) var(--ease-out);
+}
+
+.ga-row {
+  position: relative;
+  width: 100%;
+  height: 13rem;
+  padding: 0 2.6rem 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
+  text-align: left;
+  border-radius: 1rem;
+  --fx-r: 1rem;
+}
+
+.ga-row::after {
+  content: '';
+  position: absolute;
+  left: 17.4rem;
+  right: 2.6rem;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.ga-row.focused {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.ga-row.focused::after {
+  display: none;
+}
+
+.ga-check {
+  flex: none;
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 0.8rem;
+  display: grid;
+  place-items: center;
+  font-size: 2.8rem;
+  color: transparent;
+  background: rgba(255, 255, 255, 0.22);
+  transition: background 0.15s, color 0.15s;
+}
+
+.ga-row.on .ga-check {
+  background: #fff;
+  color: #111;
+}
+
+.ga-art {
+  flex: none;
+  width: 6.6rem;
+  height: 6.6rem;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-3);
+  font-size: 3rem;
+}
+
+.ga-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ga-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.ga-name {
+  max-width: 100%;
+  font-size: 3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ga-badge {
+  padding: 0.1rem 1.1rem;
+  border-radius: 0.4rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #2a2d34;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.ga-why {
+  font-size: 2rem;
+  color: var(--text-3);
+}
+
+.ga-meta {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.8rem;
+  font-size: 2.5rem;
+  color: var(--text-2);
+}
+
+.ga-row.blocked .ga-check {
+  opacity: 0.25;
+}
+
+.ga-row.blocked .ga-art,
+.ga-row.blocked .ga-name,
+.ga-row.blocked .ga-meta {
+  opacity: 0.55;
+}
+
+.ga-empty {
+  position: absolute;
+  top: 44rem;
+  left: 21rem;
+  font-size: 2.8rem;
+  color: var(--text-3);
+}
+
+.ga-side {
+  position: absolute;
+  top: 27.4rem;
+  left: 136.4rem;
+  width: 38.8rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.ga-btn {
+  height: 7.2rem;
+  margin-bottom: 2.4rem;
+  border-radius: 3.6rem;
+  display: grid;
+  place-items: center;
+  font-size: 2.8rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.15s, color 0.15s;
+  --fx-r: 3.6rem;
+}
+
+.ga-btn.focused {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.ga-btn.disabled {
+  color: var(--text-4);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ga-meter {
+  margin-top: 19rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.ga-meter-name {
+  font-size: 2.5rem;
+}
+
+.ga-meter-bar {
+  position: relative;
+  height: 0.6rem;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.ga-meter-bar i,
+.ga-meter-bar b {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s var(--ease-out), left 0.3s var(--ease-out);
+}
+
+.ga-meter-bar i {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* The part the ticked games free up */
+.ga-meter-bar b {
+  background: #4ea8ff;
+}
+
+.ga-meter-free {
+  align-self: flex-end;
+  font-size: 2.2rem;
+  color: var(--text-2);
+}
+
+.ga-selected {
+  margin: 5.4rem 0 4.6rem;
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--text-2);
+}
+
+html.ui-glass .tile-inner,
+html.ui-glass .lib-tile { border-radius: 2.2rem; backdrop-filter: blur(1rem); }
+html.ui-sharp .tile-inner,
+html.ui-sharp .lib-tile { border-radius: 0; }

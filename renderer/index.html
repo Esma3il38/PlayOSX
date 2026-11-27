@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://i.ytimg.com app: data: blob: https://*.steamstatic.com https://*.steampowered.com https://*.akamaihd.net https://cdn.discordapp.com https://api.deckthemes.com https://*.steamgriddb.com; media-src 'self' blob: data: app: file:; connect-src 'self' app:; font-src 'self' data:; frame-src https://www.youtube.com https://www.youtube-nocookie.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PlayOSX</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/library.css">
+  <link rel="stylesheet" href="css/settings.css">
+  <link rel="stylesheet" href="css/quickmenu.css">
+  <link rel="stylesheet" href="css/overlays.css">
+  <link rel="stylesheet" href="css/boot.css">
+  <link rel="stylesheet" href="css/bg-stage.css">
+  <link rel="stylesheet" href="css/ps5-latest.css">
+  <link rel="stylesheet" href="css/ps5-motion.css">
+  <link rel="stylesheet" href="css/ps5-final.css">
+  <link rel="stylesheet" href="css/ps5-polish.css">
+  <link rel="stylesheet" href="css/ps5-perf.css">
+</head>
+<body>
+  <div id="boot-cover" style="position:fixed;inset:0;background:#000;z-index:99997"></div>
+  <div id="app">
+    <canvas id="bg-canvas"></canvas>
+    <div id="hero-bg">
+      <div class="hero-layer"></div>
+      <div class="hero-layer"></div>
+      <div class="hero-scrim"></div>
+    </div>
+    <main id="views"></main>
+  </div>
+  <div id="overlays"></div>
+  <div id="toasts"></div>
+  <div id="drag-strip">PlayOSX</div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
+

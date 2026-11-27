@@ -1,0 +1,37 @@
+// Builds main/native/syshelper.exe from syshelper.cs when it is missing or
+// older than its source (or always, with --force). It uses the C# compiler
+// that ships with Windows, so no extra tools are needed.
+
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+const dir = path.join(__dirname, '..', 'main', 'native');
+const exe = path.join(dir, 'syshelper.exe');
+const src = path.join(dir, 'syshelper.cs');
+const src2 = path.join(dir, 'display.cs'); // compiled together with syshelper.cs
+const opus = path.join(dir, 'Concentus.dll'); // built in when it is there (scripts/fetch-concentus.js)
+
+if (process.platform !== 'win32') {
+  console.log('syshelper: skipped (Windows only)');
+  process.exit(0);
+}
+
+const force = process.argv.includes('--force');
+const built = fs.existsSync(exe) ? fs.statSync(exe).mtimeMs : 0;
+const stale = built < fs.statSync(src).mtimeMs || built < fs.statSync(src2).mtimeMs || (fs.existsSync(opus) && built < fs.statSync(opus).mtimeMs);
+if (!force && !stale) process.exit(0);
+
+console.log('Building main/native/syshelper.exe ...');
+try {
+  execSync(`"${path.join(dir, 'build.cmd')}"`, { stdio: 'inherit' });
+} catch {
+  console.error('\nCould not build syshelper.exe. It needs the .NET Framework 4 C# compiler,');
+  console.error('which ships with Windows (C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe).');
+  if (fs.existsSync(exe)) { console.error('Using the existing syshelper.exe (new controller tools need a successful build).'); process.exit(0); }
+  process.exit(1);
+}
+if (!fs.existsSync(exe)) {
+  console.error('syshelper.exe was not created.');
+  process.exit(1);
+}

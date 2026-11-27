@@ -1,0 +1,79 @@
+/* Final PS5 pass: dark spotlight settings, 60% transparent soft cards, roomier lists */
+
+/* Settings background = v27's (theme + spotlight cone + swaying rays from settings.css), with the bokeh stream on top */
+.ambient-stage { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
+.ambient-stage.lit { opacity: 1; }
+.ambient-stage .bs-particles { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* Cards: 60% transparent, edge softened to 5% */
+.menu-panel,
+.dialog,
+.qm-card {
+  background: rgba(34, 38, 52, 0.4) !important;
+  border: 0.1rem solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 2.4rem 7rem rgba(0, 0, 0, 0.35) !important;
+}
+.menu-item.focused,
+.set-item.focused {
+  box-shadow: none !important;
+}
+
+/* Settings section list: spacing 20% tighter than the last version */
+.set-nav { gap: 2.7rem !important; }
+.set-nav-item { padding-top: 1.45rem !important; padding-bottom: 1.45rem !important; line-height: 1.5; }
+
+/* ---------- Idle screen ---------- */
+.idle-screen { position: fixed; inset: 0; z-index: 9000; opacity: 0; transition: opacity .9s ease; background: #000; cursor: none; }
+.idle-screen.in { opacity: 1; }
+.idle-screen.out { opacity: 0; transition-duration: .4s; }
+.idle-screen .boot-stage { position: absolute; inset: 0; }
+.idle-text { position: absolute; left: 0; right: 0; top: 22%; text-align: center; font-size: 2.6rem; font-weight: 300; letter-spacing: .02em; color: rgba(255, 255, 255, .92); animation: idleText 1.4s ease .5s backwards; }
+.idle-logo { position: absolute; left: 50%; top: 50%; width: 9.4rem; height: 9.4rem; margin: -4.7rem 0 0 -4.7rem; border-radius: 50%; background: #fff; color: #10131a; display: grid; place-items: center; box-shadow: 0 0 5rem rgba(255, 255, 255, .25); animation: idleLogo 1.2s cubic-bezier(.2, .9, .25, 1.1) .3s backwards, idleBreath 3.4s ease-in-out 1.6s infinite; }
+.idle-logo svg { width: 55%; height: 55%; }
+@keyframes idleText { from { opacity: 0; translate: 0 2rem; filter: blur(6px); } }
+@keyframes idleLogo { from { opacity: 0; scale: .5; filter: blur(14px); } }
+@keyframes idleBreath { 0%, 100% { box-shadow: 0 0 3rem rgba(255, 255, 255, .15); } 50% { box-shadow: 0 0 7rem rgba(255, 255, 255, .38); } }
+
+/* ---------- Motion everywhere ---------- */
+@keyframes riseIn { from { opacity: 0; translate: 0 2.4rem; scale: .97; } }
+@keyframes slideIn { from { opacity: 0; translate: -2.4rem 0; } }
+@keyframes focusPop { from { scale: .978; filter: brightness(1.35); } 60% { scale: 1.012; } to { scale: 1; filter: none; } }
+@keyframes ringPulse { 0%, 100% { box-shadow: 0 0 0 .2rem rgba(255,255,255,.9), 0 0 1.6rem rgba(120,170,255,.25); } 50% { box-shadow: 0 0 0 .2rem #fff, 0 0 3.4rem rgba(120,170,255,.6); } }
+
+.set-root-item { animation: riseIn .6s cubic-bezier(.2, .9, .25, 1.1) backwards; }
+.set-root-item:nth-child(1) { animation-delay: .02s; } .set-root-item:nth-child(2) { animation-delay: .06s; }
+.set-root-item:nth-child(3) { animation-delay: .10s; } .set-root-item:nth-child(4) { animation-delay: .14s; }
+.set-root-item:nth-child(5) { animation-delay: .18s; } .set-root-item:nth-child(6) { animation-delay: .22s; }
+.set-root-item:nth-child(7) { animation-delay: .26s; } .set-root-item:nth-child(8) { animation-delay: .30s; }
+.set-root-item:nth-child(n+9) { animation-delay: .34s; }
+.set-nav-item { animation: slideIn .5s cubic-bezier(.2, .9, .25, 1) backwards; }
+.set-nav-item:nth-child(1) { animation-delay: .05s; } .set-nav-item:nth-child(2) { animation-delay: .1s; }
+.set-nav-item:nth-child(3) { animation-delay: .15s; } .set-nav-item:nth-child(4) { animation-delay: .2s; }
+.set-nav-item:nth-child(5) { animation-delay: .25s; } .set-nav-item:nth-child(n+6) { animation-delay: .3s; }
+.set-item { animation: riseIn .5s cubic-bezier(.2, .9, .25, 1) backwards; }
+.set-item:nth-child(2) { animation-delay: .04s; } .set-item:nth-child(3) { animation-delay: .08s; }
+.set-item:nth-child(4) { animation-delay: .12s; } .set-item:nth-child(5) { animation-delay: .16s; }
+.set-item:nth-child(n+6) { animation-delay: .2s; }
+.set-item, .set-nav-item, .set-root-item, .menu-item, .dlg-btn { transition: scale .32s cubic-bezier(.2, .9, .25, 1.2), background .2s, color .2s, box-shadow .25s, filter .25s; }
+.set-item.focused, .set-nav-item.focused, .set-root-item.focused, .menu-item.focused { scale: 1.012; }
+.dlg-btn.focused { scale: 1.04; }
+.fx:active, .dlg-btn:active, .menu-item:active { scale: .97; transition: scale .1s; }
+.switch, .switch i, .ps-slider * { transition-duration: .28s !important; transition-timing-function: cubic-bezier(.34, 1.4, .5, 1) !important; }
+.menu-item { animation: riseIn .4s cubic-bezier(.2, .9, .25, 1) backwards; }
+.menu-item:nth-child(2) { animation-delay: .03s; } .menu-item:nth-child(3) { animation-delay: .06s; }
+.menu-item:nth-child(4) { animation-delay: .09s; } .menu-item:nth-child(n+5) { animation-delay: .12s; }
+.dialog { animation: riseIn .45s cubic-bezier(.2, .9, .25, 1.1) backwards; }
+
+/* Welcome (user select) */
+.welcome.in .ws-title { animation: wsTitle 1.2s cubic-bezier(.2, .8, .2, 1) .3s backwards !important; }
+.welcome.in .ws-av { animation: wsAv .9s cubic-bezier(.2, .9, .25, 1.2) calc(.6s + var(--i) * .13s) backwards !important; }
+.welcome.in .ws-name { animation: riseIn .7s ease calc(1s + var(--i) * .13s) backwards !important; }
+.ws-item.sel .ws-av.focused .ws-avatar, .ws-item.sel .ws-av.focused { animation: ringPulse 2.6s ease-in-out infinite; border-radius: 50%; }
+@keyframes wsTitle { from { opacity: 0; translate: 0 2rem; letter-spacing: .3em; filter: blur(10px); } }
+@keyframes wsAv { from { opacity: 0; translate: 0 5rem; scale: .6; filter: blur(8px); } }
+
+/* Home hero art and rows arrive with a slow zoom */
+#hero-bg.hero-intro .hero-layer { animation: heroZoom 2.2s cubic-bezier(.2, .8, .2, 1) backwards; }
+/* One continuous animation: intro zoom and the slow drift run together, so when the intro class is removed the drift keeps going instead of restarting (that was the second animation). */
+#hero-bg.hero-intro.hero-motion .hero-layer.drifting { animation: heroZoom 2.2s cubic-bezier(.2, .8, .2, 1) backwards, heroDrift 18s var(--ease-out) both; }
+@keyframes heroZoom { from { scale: 1.16; opacity: 0; } }

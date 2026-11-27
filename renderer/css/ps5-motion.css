@@ -1,0 +1,321 @@
+/* PS5 motion layer: one place for focus, spring and entrance animation.
+   JS marks focus with .focused (never .focus). Loaded last. */
+:root {
+  --ps5-spring: cubic-bezier(0.34, 1.32, 0.5, 1);
+  --ps5-out: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* White focus ring that breathes, like the console's selection halo */
+@keyframes ps5Breathe {
+  0%, 100% { box-shadow: 0 1.4rem 4rem rgba(0,0,0,.58), 0 0 1.6rem rgba(120,170,255,.16); }
+  50%      { box-shadow: 0 1.4rem 4rem rgba(0,0,0,.58), 0 0 3.2rem rgba(120,170,255,.38); }
+}
+.tile.focused .tile-inner,
+.lib-tile.focused .lt-art {
+  animation: ps5Breathe 2.4s ease-in-out infinite;
+}
+
+/* Tiles and cards ease up with a small overshoot */
+.tile .tile-inner,
+.lib-tile .lt-art {
+  transition: transform calc(.28s * var(--spd)) var(--ps5-spring),
+              box-shadow calc(.2s * var(--spd)) var(--ps5-out),
+              outline-color calc(.2s * var(--spd)) var(--ps5-out);
+}
+.lib-tile.focused .lt-art { transform: scale(1.06); }
+
+/* Library grid: cards rise in one after another */
+@keyframes ps5RiseIn { from { opacity: 0; transform: translateY(2.4rem) scale(.96); } to { opacity: 1; transform: none; } }
+.lib-grid .lib-tile { animation: ps5RiseIn calc(.45s * var(--spd)) var(--ps5-out) both; }
+.lib-grid .lib-tile:nth-child(-n+24) { animation-delay: calc(var(--n, 0) * 28ms); }
+.lib-grid .lib-tile:nth-child(1){--n:0}.lib-grid .lib-tile:nth-child(2){--n:1}.lib-grid .lib-tile:nth-child(3){--n:2}
+.lib-grid .lib-tile:nth-child(4){--n:3}.lib-grid .lib-tile:nth-child(5){--n:4}.lib-grid .lib-tile:nth-child(6){--n:5}
+.lib-grid .lib-tile:nth-child(7){--n:6}.lib-grid .lib-tile:nth-child(8){--n:7}.lib-grid .lib-tile:nth-child(9){--n:8}
+.lib-grid .lib-tile:nth-child(10){--n:9}.lib-grid .lib-tile:nth-child(11){--n:10}.lib-grid .lib-tile:nth-child(12){--n:11}
+
+/* Settings: icon pops and label nudges on the focused row, page content slides in */
+.set-root-item .sri-icon { transition: transform calc(.28s * var(--spd)) var(--ps5-spring); }
+.set-root-item.focused .sri-icon { transform: scale(1.14); }
+.set-root-item .sri-label { transition: transform calc(.24s * var(--spd)) var(--ps5-out); }
+.set-root-item.focused .sri-label { transform: translateX(.6rem); }
+.set-item, .set-nav-item { transition: background .18s var(--ps5-out), transform calc(.22s * var(--spd)) var(--ps5-out); }
+.set-item.focused { transform: translateX(.4rem); }
+.set-nav-item.focused { transform: translateX(.5rem); }
+@keyframes ps5SlideIn { from { opacity: 0; transform: translateX(3rem); } to { opacity: 1; transform: none; } }
+.set-list.enter > * { animation: ps5SlideIn calc(.3s * var(--spd)) var(--ps5-out) both; }
+
+/* Quick menu and dialogs: spring pop */
+@keyframes ps5Pop { from { opacity: 0; transform: translateY(2rem) scale(.94); } to { opacity: 1; transform: none; } }
+.dialog, .menu-panel { animation: ps5Pop calc(.32s * var(--spd)) var(--ps5-spring) backwards; }
+.qm-card.focused { transform: translateY(-.5rem) scale(1.03); transition: transform calc(.26s * var(--spd)) var(--ps5-spring); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tile.focused .tile-inner, .lib-tile.focused .lt-art, .lib-grid .lib-tile,
+  .set-list.enter > *, .dialog, .menu-panel { animation: none !important; }
+}
+
+/* ===== Thin type in settings and popup cards ===== */
+.settings-view, .settings-view *, .menu-panel, .menu-panel *, .dialog, .dialog * { font-weight: 300 !important; }
+html.lang-rtl .settings-view, html.lang-rtl .settings-view *, html.lang-rtl .menu-panel *, html.lang-rtl .dialog * { font-weight: 300 !important; }
+
+/* ===== Description sits under its option, only while it is focused (as on PS5) ===== */
+.set-item { flex-wrap: wrap; align-content: center; row-gap: 0; }
+.si-desc {
+  flex: 0 0 100%; order: 9; font-size: 2.1rem; line-height: 1.5; color: var(--text-3);
+  max-height: 0; opacity: 0; overflow: hidden; margin: 0; text-align: left;
+  transition: max-height calc(.3s * var(--spd)) var(--ps5-out), opacity calc(.25s * var(--spd)) var(--ps5-out), margin calc(.3s * var(--spd)) var(--ps5-out);
+}
+.set-item.focused .si-desc { max-height: 14rem; opacity: 1; margin: .4rem 0 0; }
+.set-item.has-desc.focused { padding-block: 1.8rem; }
+.set-note { display: none; }
+
+/* ===== Glass cards: the console's frosted blur ===== */
+.menu-panel, .dialog, .qm-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.05) 60%), rgba(40,44,66,.27) !important;
+  -webkit-backdrop-filter: blur(4.4rem) saturate(1.7); backdrop-filter: blur(4.4rem) saturate(1.7);
+  border: .1rem solid rgba(255,255,255,.24) !important;
+  box-shadow: 0 2.4rem 7rem rgba(0,0,0,.4), inset 0 .1rem 0 rgba(255,255,255,.3);
+}
+/* Choice pop-ups: 20% smaller than before */
+.menu-panel { min-width: 45rem; max-width: 66rem; padding: .8rem; border-radius: 1.2rem; }
+.menu-item { min-height: 7.2rem; padding: .4rem 2rem; gap: 1.6rem; border-radius: .8rem; font-size: 2.2rem; --fx-r: .8rem; }
+.mi-icon { width: 2.4rem; font-size: 2.4rem; }
+.mi-hint { font-size: 1.6rem; }
+.set-item.focused, .menu-item.focused {
+  background: rgba(255,255,255,.12) !important;
+  box-shadow: none !important;
+  color: #fff !important;
+}
+.menu-title { display: none; }
+
+/* ===== Text centred in its row (Cairo sits low) and correct order for mixed Arabic / Latin ===== */
+.si-label > span, .si-value, .sri-label, .menu-item, .mi-label, .dlg-btn { line-height: 1.5; }
+html.lang-rtl .si-label > span, html.lang-rtl .si-value, html.lang-rtl .sri-label, html.lang-rtl .mi-label { padding-bottom: .14em; }
+html.lang-rtl .si-label > span, html.lang-rtl .si-value, html.lang-rtl .si-desc, html.lang-rtl .sri-label,
+html.lang-rtl .mi-label, html.lang-rtl .mi-hint { unicode-bidi: plaintext; }
+.si-chev, .si-label svg { align-self: center; }
+
+/* ===== Sliders are inline: left / right changes them, no pop-up ===== */
+.si-range { width: 30rem; max-width: none; }
+.set-item .ps-slider.thin { --knob: 2.6rem; }
+.set-item .ps-slider.thin .pss-track { height: .6rem; background: rgba(255,255,255,.22); box-shadow: none; }
+.set-item .ps-slider.thin .pss-track i { background: #fff; }
+.set-item .ps-slider.thin .pss-knob { scale: .3; opacity: 0; background: #fff; box-shadow: 0 .3rem 1.2rem rgba(0,0,0,.4);
+  transition: left .12s var(--ps5-out), scale calc(.24s * var(--spd)) var(--ps5-spring), opacity .2s; }
+.set-item.editing .ps-slider.thin .pss-knob { scale: 1; opacity: 1; }
+.set-item.editing { background: rgba(255,255,255,.2) !important; }
+.set-item.editing .si-num { color: #fff; }
+.si-num { min-width: 7rem; text-align: right; }
+
+/* ===== A row that appears (a setting switched on) slides and fades in ===== */
+@keyframes ps5RowIn { from { opacity: 0; transform: translateY(-2.2rem) scale(.97); } to { opacity: 1; transform: none; } }
+.set-list > .row-in { animation: ps5RowIn calc(.45s * var(--spd)) var(--ps5-out) both !important; }
+.set-list > .row-in:nth-of-type(2) { animation-delay: .04s !important; }
+
+/* ===== Choosing in a pop-up: the row presses, flashes, then the card closes ===== */
+@keyframes ps5Pick { 0% { transform: scale(1); } 35% { transform: scale(.94); background: rgba(255,255,255,.55); } 100% { transform: scale(1.02); background: rgba(255,255,255,.3); } }
+.menu-item.picked { animation: ps5Pick .22s var(--ps5-out) both; }
+.menu-item.picked .mi-check { animation: ps5Pop .22s var(--ps5-spring) both; }
+.menu-overlay.closing .menu-panel { transform: scale(.94) translateY(1rem) !important; opacity: 0 !important; transition-duration: .2s !important; }
+
+/* ===== Settings background: v10 spotlight + rays (cool tint), bokeh balls kept on top ===== */
+.set-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    /* the source, just above the screen */
+    radial-gradient(9% 16% at 17% -2%, rgba(214, 226, 255, 0.34), transparent 100%),
+    /* the cone's glow: brightest along its middle, down to the right */
+    radial-gradient(34% 70% at 24% 4%, rgba(200, 218, 255, 0.16), transparent 100%),
+    radial-gradient(48% 95% at 30% 14%, rgba(200, 218, 255, 0.07), transparent 100%),
+    /* the floor */
+    radial-gradient(46% 11% at 22% 90%, rgba(176, 184, 206, 0.2), transparent 100%),
+    linear-gradient(180deg, rgba(14, 20, 52, 0.62) 0%, rgba(9, 13, 38, 0.74) 55%, rgba(5, 8, 24, 0.84) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0) 40%, rgba(6, 6, 14, 0.22) 100%);
+}
+
+/* The rays: streaks with crisp edges fanning out from the source (at
+   29.4% 15% of these layers, which overhang the screen by 30% each way),
+   fading with distance. */
+.set-bg::before,
+.set-bg::after {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  transform-origin: 29.4% 15%;
+  /* Near the source the beams melt into its glow; they part further down. */
+  -webkit-mask-image: radial-gradient(45% 55% at 29.4% 15%, rgba(0, 0, 0, 0.35) 0%, #000 20%, rgba(0, 0, 0, 0.6) 52%, transparent 100%);
+  mask-image: radial-gradient(45% 55% at 29.4% 15%, rgba(0, 0, 0, 0.35) 0%, #000 20%, rgba(0, 0, 0, 0.6) 52%, transparent 100%);
+  filter: blur(0.7rem);
+  pointer-events: none;
+}
+
+/* Distinct beams with dark gaps between them, fanning from down-right
+   (~140deg) to down-left (~205deg); the brightest point down and to the right. */
+.set-bg::before {
+  background: conic-gradient(
+    from 128deg at 29.4% 15%,
+    transparent 0deg,
+    rgba(214, 226, 255, 0.12) 4deg,
+    rgba(214, 226, 255, 0.03) 9deg,
+    rgba(214, 226, 255, 0.22) 14deg,
+    rgba(214, 226, 255, 0.06) 19deg,
+    rgba(214, 226, 255, 0.3) 25deg,
+    rgba(214, 226, 255, 0.08) 31deg,
+    rgba(214, 226, 255, 0.25) 36deg,
+    rgba(214, 226, 255, 0.04) 41deg,
+    rgba(214, 226, 255, 0.2) 47deg,
+    rgba(214, 226, 255, 0.05) 53deg,
+    rgba(214, 226, 255, 0.17) 59deg,
+    rgba(214, 226, 255, 0.03) 65deg,
+    rgba(214, 226, 255, 0.11) 71deg,
+    transparent 78deg
+  );
+  animation: raysSway 9s var(--ease-in-out) infinite alternate;
+}
+
+/* Finer beams drifting the other way, so the rays shimmer as they cross. */
+.set-bg::after {
+  background: conic-gradient(
+    from 136deg at 29.4% 15%,
+    transparent 0deg,
+    rgba(210, 224, 255, 0.13) 5deg,
+    transparent 9deg,
+    rgba(210, 224, 255, 0.14) 16deg,
+    transparent 21deg,
+    rgba(210, 224, 255, 0.12) 29deg,
+    transparent 34deg,
+    rgba(210, 224, 255, 0.1) 43deg,
+    transparent 48deg,
+    rgba(210, 224, 255, 0.08) 57deg,
+    transparent 63deg
+  );
+  animation: raysSway2 13s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes raysSway {
+  from { transform: rotate(-4deg); opacity: 0.85; }
+  to { transform: rotate(4deg); opacity: 1; }
+}
+
+@keyframes raysSway2 {
+  from { transform: rotate(3deg); opacity: 1; }
+  to { transform: rotate(-5deg); opacity: 0.7; }
+}
+
+
+body.reduce-motion .set-bg::before, body.reduce-motion .set-bg::after { animation: none; }
+.set-bg > .ambient-stage { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.set-bg > .ambient-stage canvas { width: 100%; height: 100%; display: block; }
+
+/* ===== Focus frame on settings rows: one even rounded frame, no moving mask ===== */
+.set-item.fx::before, .set-nav-item.fx::before, .set-root-item.fx::before, .menu-item.fx::before {
+  inset: 0 !important; padding: 0 !important; transform: none !important; animation: none !important;
+  -webkit-mask: none !important; mask: none !important;
+  background: transparent !important;
+  border: .2rem solid rgba(255,255,255,.78); border-radius: var(--fx-r);
+  box-sizing: border-box; transition: opacity .18s;
+}
+.set-item.focused, .set-nav-item.focused, .set-root-item.focused, .menu-item.focused { scale: 1 !important; }
+.set-item.focused { transform: none !important; }
+
+/* ===== Top bar buttons: a single ring, centred on the disc ===== */
+.tb-icon.fx::before { display: none !important; }
+.tb-icon.focused { transform: scale(1.06); box-shadow: 0 0 0 .22rem rgba(255,255,255,.9), 0 .6rem 2rem rgba(0,0,0,.42) !important; }
+
+/* Boot stage light: soft edges */
+.bs-beam, .bs-shafts { filter: blur(2.6rem); }
+
+/* ===== Game tile: one frame that follows the art's corners ===== */
+.tile { --fx-r: 1.5rem; --fx-gap: .3rem; --fx-w: .32rem; }
+.tile-inner { border-radius: 1.5rem !important; }
+.tile.focused .tile-inner, .tile.sel.focused .tile-inner {
+  outline: none !important;
+  box-shadow: 0 1.6rem 4rem rgba(0,0,0,.55), 0 0 3rem rgba(255,255,255,.14) !important;
+}
+
+/* ===== Windowed mode: no empty band above the interface ===== */
+html.windowed #app, html.windowed .overlay, html.windowed .boot { top: 0 !important; }
+html.windowed #drag-strip { background: transparent; color: rgba(255,255,255,.4); }
+
+/* ===== Settings open: the rows come in one after another ===== */
+@keyframes ps5RootIn { from { opacity: 0; transform: translateX(-4rem); } to { opacity: 1; transform: none; } }
+.settings-view.root-entering .set-root-item, .set-root-list > .set-root-item { animation: ps5RootIn calc(.5s * var(--spd)) var(--ps5-out) backwards; }
+.set-root-list > .set-root-item:nth-child(1){animation-delay:.02s}.set-root-list > .set-root-item:nth-child(2){animation-delay:.06s}
+.set-root-list > .set-root-item:nth-child(3){animation-delay:.10s}.set-root-list > .set-root-item:nth-child(4){animation-delay:.14s}
+.set-root-list > .set-root-item:nth-child(5){animation-delay:.18s}.set-root-list > .set-root-item:nth-child(6){animation-delay:.22s}
+.set-root-list > .set-root-item:nth-child(7){animation-delay:.26s}.set-root-list > .set-root-item:nth-child(8){animation-delay:.30s}
+.set-root-list > .set-root-item:nth-child(n+9){animation-delay:.34s}
+
+/* ===== Pop-ups close with an animation (they used to vanish at once) ===== */
+@keyframes ps5PopOut { to { opacity: 0; transform: translateY(1.4rem) scale(.95); } }
+.overlay.closing .dialog, .overlay.closing .menu-panel, .overlay.closing .qm-card,
+.overlay.closing .fp-panel, .overlay.closing .cm-panel { animation: ps5PopOut calc(.22s * var(--spd)) var(--ps5-out, ease) both !important; }
+.overlay.closing { transition: opacity calc(.24s * var(--spd)) ease, background-color calc(.24s * var(--spd)) ease; }
+.dialog-overlay.closing, .menu-overlay.closing { opacity: 0; }
+
+/* ===== User Guide: right-to-left steps, readable numbers, mixed Arabic / Latin in order ===== */
+.set-step .ss-num { font-weight: 700 !important; color: #16181d !important; font-size: 2rem; line-height: 1; }
+html.lang-rtl .set-step { direction: rtl; text-align: right; }
+html.lang-rtl .set-step .ss-text { direction: rtl; unicode-bidi: isolate; text-align: start; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+html.lang-rtl .set-step .ss-text:lang(en) { direction: ltr; }
+.set-step .ss-text { flex: 1; min-width: 0; }
+
+/* ===== Settings list: room at the bottom so the last rows are never cut off ===== */
+.set-list { padding-bottom: 12rem; }
+
+/* ===== Dark theme ===== */
+html.theme-dark .set-bg {
+  background:
+    radial-gradient(9% 16% at 17% -2%, rgba(235, 238, 255, 0.2), transparent 100%),
+    radial-gradient(34% 70% at 24% 4%, rgba(210, 218, 255, 0.08), transparent 100%),
+    linear-gradient(180deg, rgba(4, 5, 10, 0.78), rgba(2, 3, 7, 0.9)) !important;
+}
+html.theme-dark .set-bg::before, html.theme-dark .set-bg::after { opacity: .45; }
+html.theme-dark .menu-panel, html.theme-dark .dialog, html.theme-dark .qm-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 60%), rgba(12,13,20,.55) !important;
+}
+html.theme-dark .tile-inner { background-color: rgba(10, 11, 16, .94); }
+html.theme-dark .topbar { background: linear-gradient(180deg, rgba(0,0,0,.45), transparent); }
+
+/* ===== Lighter on the GPU: cheaper glass, no idle repaints ===== */
+.menu-panel, .dialog, .qm-card {
+  -webkit-backdrop-filter: blur(2.2rem) saturate(1.3) !important; backdrop-filter: blur(2.2rem) saturate(1.3) !important;
+}
+.set-bg::before, .set-bg::after { filter: blur(.5rem); will-change: transform; }
+.hero-layer { contain: layout paint; }
+.set-list { will-change: transform; }
+body.reduce-motion .set-bg::before, body.reduce-motion .set-bg::after { animation: none !important; }
+@media (prefers-reduced-motion: no-preference) { .set-bg::before { animation-duration: 14s; } .set-bg::after { animation-duration: 20s; } }
+
+/* ===== Slightly sharper corners only in Settings, pop-up menus and dialogs (quick menu and home keep their original look) ===== */
+:root { --sharp: .55rem; }
+.settings-view :is(.fx, .fx-in, .set-item, .set-nav-item, .set-root-item, .set-step, input, textarea, select),
+.menu-panel, .menu-panel :is(.menu-item, .fx),
+.dialog, .dialog :is(.dlg-btn, .fx, input, textarea) {
+  --fx-r: var(--sharp) !important;
+  border-radius: var(--sharp) !important;
+}
+.settings-view :is(.fx, .fx-in)::before, .settings-view :is(.fx, .fx-in)::after,
+.menu-panel .fx::before, .menu-panel .fx::after, .dialog .fx::before, .dialog .fx::after { border-radius: var(--sharp) !important; }
+.settings-view .pss-track, .settings-view .pss-track i { border-radius: 1rem !important; }
+.settings-view .switch, .menu-panel .switch, .dialog .switch { border-radius: 2rem !important; }
+.settings-view .switch i, .settings-view .pss-knob, .set-step .ss-num, .settings-view .spinner { border-radius: 50% !important; }
+
+/* ===== Game tile: ring drawn as a plain border that follows the art's corners (no corner specks) ===== */
+.tile.fx::before {
+  -webkit-mask: none !important; mask: none !important; background: transparent !important; padding: 0 !important;
+  border: .32rem solid rgba(255,255,255,.92); box-sizing: border-box; animation: none !important;
+  border-radius: calc(1.5rem + var(--fx-gap) + var(--fx-w)) !important; /* concentric with the art: gap + ring width */
+}
+.tile.fx::after { border-radius: 1.5rem !important; clip-path: inset(0 round 1.5rem); }
+.tile .tile-inner { overflow: hidden; }
+
+/* ===== Music panel: the top progress bar is the focusable one ===== */
+.qp-row.qp-proxy { height: 0 !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; border: 0 !important; overflow: hidden; opacity: 0; pointer-events: none; }
+.qp-row.qp-proxy::before, .qp-row.qp-proxy::after { display: none !important; }
+.qm-panel:has(.qp-proxy.editing) .mp-progress { filter: drop-shadow(0 0 1.4rem rgba(255,255,255,.35)); }
+.qm-panel:has(.qp-proxy.editing) .mp-progress .pss-track { height: .9rem; background: rgba(255,255,255,.3); }
+.qm-panel:has(.qp-proxy.editing) .mp-progress .pss-knob { scale: 1.45; box-shadow: 0 0 0 .3rem rgba(255,255,255,.9), 0 .3rem 1.2rem rgba(0,0,0,.5); }
+.qm-panel { max-height: calc(100vh - 28rem) !important; }

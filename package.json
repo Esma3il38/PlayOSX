@@ -1,0 +1,72 @@
+{
+  "name": "playosx",
+  "productName": "PlayOSX",
+  "version": "1.0.2-beta",
+  "description": "A controller-first game launcher for Windows with a PS5-style interface (multi-language)",
+  "main": "main/main.js",
+  "private": true,
+  "license": "MIT",
+  "author": "Esma3iL Magdey",
+  "scripts": {
+    "start": "node scripts/fetch-concentus.js && node scripts/build-native.js && node scripts/fetch-libviiper.js && node scripts/fetch-presentmon.js && node scripts/fetch-ytdlp.js && electron .",
+    "dev": "node scripts/fetch-concentus.js && node scripts/build-native.js && node scripts/fetch-libviiper.js && node scripts/fetch-presentmon.js && node scripts/fetch-ytdlp.js && electron . --dev",
+    "build:native": "node scripts/build-native.js --force",
+    "dist": "node scripts/fetch-concentus.js && node scripts/build-native.js && node scripts/fetch-libviiper.js && node scripts/fetch-presentmon.js && node scripts/fetch-ytdlp.js && electron-builder --win",
+    "dist:dir": "node scripts/fetch-concentus.js && node scripts/build-native.js && node scripts/fetch-libviiper.js && node scripts/fetch-presentmon.js && node scripts/fetch-ytdlp.js && electron-builder --win dir"
+  },
+  "build": {
+    "appId": "com.playosx.app",
+    "productName": "PlayOSX",
+    "copyright": "Copyright © 2026 , Esma3iL Magdey",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main/**",
+      "!main/native/*.cs",
+      "!main/native/*.cmd",
+      "renderer/**",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "main/native/**",
+      "main/defaultpacks/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "renderer/assets/icon.png",
+      "artifactName": "PlayOSX-${version}-win-${arch}.${ext}"
+    },
+     "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PlayOSX",
+      "artifactName": "PlayOSX-Setup-${version}.${ext}"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "Esma3il38",
+      "repo": "PlayOSX"
+    }
+  },
+  "devDependencies": {
+    "electron": "^30.5.1",
+    "electron-builder": "^26.15.3"
+  }
+}

@@ -1,0 +1,83 @@
+/* ==========================================================================
+   Performance pass (loaded last)
+   1) Black background: the animated canvas is gone, nothing moves behind the art.
+   2) Hero art: slow zoom kept (it only uses transform, which is cheap).
+   3) Closing panels: no live blur while they animate out (that was the lag).
+   4) Game tiles: cheap shadows, no extra layers, so the carousel stays smooth.
+   ========================================================================== */
+
+/* 1) Black everywhere behind the art */
+html, body, #app { background: #000 !important; }
+#bg-canvas { display: none !important; }
+
+/* 2) Artwork: the slow zoom (drift / intro) is back; just keep it on the GPU */
+#hero-bg .hero-layer { will-change: opacity, transform; }
+
+/* 3) Closing: opacity + a short slide only, blur switched off at once */
+.overlay.closing :is(.dialog, .menu-panel, .qm-card, .fp-panel, .cm-panel),
+.qm-panel.out, .qm.closing :is(.qm-card, .qm-panel, .qm-bar),
+.qm-shade {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.overlay.closing :is(.dialog, .menu-panel, .qm-card, .fp-panel, .cm-panel) {
+  background: rgba(30, 34, 48, .72) !important;
+  box-shadow: none !important;
+  animation: perfOut .2s cubic-bezier(.4, 0, .2, 1) both !important;
+}
+.qm-panel.out {
+  background: rgba(30, 34, 48, .72) !important;
+  box-shadow: none !important;
+  animation: perfOut .2s cubic-bezier(.4, 0, .2, 1) both !important;
+}
+@keyframes perfOut { to { opacity: 0; transform: translate3d(0, 1.2rem, 0); } }
+.overlay.closing { transition: background-color .2s ease !important; }
+
+/* Lighter glass while open too (a smaller blur radius is much cheaper to repaint) */
+.menu-panel, .dialog, .qm-card, .qm-panel, .fp-panel, .cm-panel, .search-panel, .lib-filter-panel, .hub-card, .hub-btn:not(.focused), .hub-btn.focused {
+  -webkit-backdrop-filter: blur(1.2rem) saturate(1.15) !important;
+  backdrop-filter: blur(1.2rem) saturate(1.15) !important;
+}
+
+/* 4) Game tiles */
+.tile-art img { transform: none !important; }
+.tile-inner { box-shadow: 0 .6rem 1.4rem rgba(0, 0, 0, .4); transition: none !important; }
+.tile.sel .tile-inner { box-shadow: 0 .8rem 1.8rem rgba(0, 0, 0, .5); }
+/* The white ring is drawn once, by .tile.fx::before (ps5-motion.css). A second white box-shadow ring here made a double frame. */
+.tile.focused .tile-inner,
+.tile.sel.focused .tile-inner { box-shadow: 0 .8rem 1.8rem rgba(0, 0, 0, .5) !important; transition: none !important; }
+.tile { transition: transform calc(.3s * var(--spd)) cubic-bezier(.2, 0, 0, 1), opacity calc(.2s * var(--spd)) ease !important; }
+
+/* ==========================================================================
+   Text centred inside its box (settings sections, categories, pop-up menus,
+   dialog buttons) instead of sitting at the start edge.
+   ========================================================================== */
+.set-nav .set-nav-item,
+.menu-item,
+.dlg-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.set-nav .set-nav-item { padding-inline: 2.2rem !important; }
+
+/* Menu rows: the label is the centred thing; the tick / arrow sits at the end edge */
+.menu-item { position: relative; }
+.menu-item .mi-icon:empty { display: none; }
+.menu-item .mi-label { flex: 0 1 auto !important; text-align: center !important; }
+.menu-item .mi-hint { margin: 0 !important; text-align: center; }
+.menu-item .mi-check { position: absolute; inset-inline-end: 1.8rem; top: 50%; translate: 0 -50%; margin: 0 !important; }
+
+/* ==========================================================================
+   Artwork cross-fade while moving between games: longer and smoother.
+   The incoming picture fades in over 1.4s; the outgoing one stays solid for a
+   moment and then fades under it, so there is no dark dip in the middle.
+   ========================================================================== */
+#hero-bg .hero-layer {
+  transition: opacity calc(1.4s * var(--spd, 1)) cubic-bezier(.4, 0, .2, 1);
+}
+#hero-bg .hero-layer:not(.show) {
+  transition: opacity calc(1.1s * var(--spd, 1)) cubic-bezier(.4, 0, .2, 1) calc(.35s * var(--spd, 1));
+}
+#hero-bg .hero-scrim { transition-duration: calc(1s * var(--spd, 1)), calc(1s * var(--spd, 1)); }

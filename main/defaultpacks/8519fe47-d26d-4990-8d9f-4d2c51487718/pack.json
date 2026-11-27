@@ -1,0 +1,9 @@
+{
+  "name": "PlayStation 5 Home Menu",
+  "author": "kobacat",
+  "version": "v1.0",
+  "manifest_version": 1,
+  "music": true,
+  "ignore": [],
+  "id": "8519fe47-d26d-4990-8d9f-4d2c51487718"
+}

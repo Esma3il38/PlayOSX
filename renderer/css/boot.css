@@ -1,0 +1,458 @@
+/* ------------------------------------------------------------------ */
+/* Boot stage: spotlight, haze and particles (behind the welcome UI)    */
+/* ------------------------------------------------------------------ */
+.boot-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #121319;
+  transition: opacity var(--leave, 0.7s) var(--ease);
+}
+
+.boot-stage.leave {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bs-base,
+.bs-beam,
+.bs-source,
+.bs-floor,
+.bs-particles,
+.bs-black {
+  position: absolute;
+  pointer-events: none;
+}
+
+.bs-base {
+  inset: 0;
+  background:
+    radial-gradient(ellipse 58% 66% at 15% 0%, rgba(128, 112, 108, 0.58), rgba(76, 68, 72, 0.26) 46%, transparent 80%),
+    radial-gradient(ellipse 70% 40% at 92% 30%, rgba(22, 24, 38, 0.9), transparent 70%),
+    linear-gradient(180deg, #1b1a20 0%, #15161d 50%, #191a22 80%, #22242d 100%);
+}
+
+/* The light cone: a soft ellipse rotated so it falls down and to the right. */
+.bs-beam {
+  left: -16%;
+  top: -10%;
+  width: 66%;
+  height: 125%;
+  transform-origin: 50% 0;
+  transform: rotate(-17deg);
+  background: radial-gradient(ellipse 40% 76% at 50% 0%, rgba(255, 236, 222, 0.42), rgba(255, 228, 212, 0.15) 38%, rgba(255, 228, 212, 0.05) 66%, transparent 86%);
+  filter: blur(1.4rem);
+  animation: beamBreath 7s ease-in-out infinite alternate;
+}
+
+/* Faint rays inside the cone, converging on the light. */
+.bs-shafts {
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(
+    from 168deg at 50% -4%,
+    rgba(255, 240, 230, 0) 0deg 1.6deg,
+    rgba(255, 240, 230, 0.07) 2.6deg,
+    rgba(255, 240, 230, 0) 3.8deg 5.1deg
+  );
+  -webkit-mask: radial-gradient(ellipse 36% 58% at 50% 0%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 80%);
+  mask: radial-gradient(ellipse 36% 58% at 50% 0%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 80%);
+  animation: shaftDrift 14s ease-in-out infinite alternate;
+}
+
+.bs-source {
+  left: 3%;
+  top: -16%;
+  width: 28%;
+  height: 30%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 242, 234, 0.62), rgba(255, 236, 226, 0.2) 55%, transparent);
+  filter: blur(1.6rem);
+}
+
+.bs-floor {
+  left: -10%;
+  right: -10%;
+  bottom: -6%;
+  height: 34%;
+  background:
+    radial-gradient(ellipse 46% 34% at 36% 72%, rgba(160, 166, 186, 0.2), transparent 75%),
+    radial-gradient(ellipse 70% 30% at 60% 88%, rgba(120, 126, 148, 0.14), transparent 75%);
+  filter: blur(1.2rem);
+}
+
+.bs-particles {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  transition: opacity 0.9s var(--ease);
+}
+
+.boot-stage.no-particles .bs-particles {
+  opacity: 0;
+}
+
+.bs-black {
+  inset: 0;
+  background: #000;
+  transition: opacity 1.4s var(--ease);
+}
+
+.boot-stage.lit .bs-black {
+  opacity: 0;
+}
+
+@keyframes beamBreath {
+  from { opacity: 0.86; }
+  to { opacity: 1; }
+}
+
+@keyframes shaftDrift {
+  from { transform: rotate(-1.2deg); }
+  to { transform: rotate(1.2deg); }
+}
+
+/* While the stage is up the views stay hidden; the home screen builds in
+   over it once a user is chosen. */
+body.booting #views {
+  visibility: hidden;
+}
+
+/* ------------------------------------------------------------------ */
+/* Welcome back / user select                                          */
+/* ------------------------------------------------------------------ */
+.welcome {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.ws-clock {
+  position: absolute;
+  top: 5rem;
+  right: 8rem;
+  font-size: 3.2rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ws-title,
+.ws-sub {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-weight: 300;
+}
+
+.ws-title {
+  top: 14.4rem;
+  font-size: 5.6rem;
+  letter-spacing: 0.005em;
+}
+
+.ws-sub {
+  top: 23.6rem;
+  font-size: 2.9rem;
+  color: var(--text-2);
+}
+
+.ws-row {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ws-item {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 29rem;
+  margin-left: -14.5rem;
+  transform: translateX(var(--x, 0));
+  transition: transform 0.5s var(--ease-out), opacity 0.2s var(--ease);
+}
+
+.ws-av {
+  position: absolute;
+  top: 40rem;
+  left: 0;
+  width: 29rem;
+  height: 29rem;
+  border-radius: 50%;
+  pointer-events: auto;
+  transform: scale(0.724);
+  transition: transform 0.45s var(--ease-out), scale 0.3s var(--ease);
+  --fx-r: 14.5rem;
+  --fx-gap: 0.75rem;
+  --fx-w: 0.32rem;
+  --glint: 0.22;
+}
+
+.ws-item.sel .ws-av {
+  transform: none;
+}
+
+.ws-av::after {
+  border-radius: 50%;
+}
+
+.ws-avatar {
+  width: 100%;
+  height: 100%;
+  font-size: 29rem;
+}
+
+.ws-plus {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.09);
+  font-size: 9rem;
+  color: #fff;
+}
+
+.ws-plus svg.ic {
+  stroke-width: 2.2;
+}
+
+.ws-name {
+  position: absolute;
+  top: 71.6rem;
+  left: -4rem;
+  right: -4rem;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 300;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.3s var(--ease), opacity 0.2s var(--ease);
+}
+
+.ws-item.ws-add:not(.sel) .ws-name {
+  color: var(--text-3);
+}
+
+.ws-opt {
+  position: absolute;
+  top: 77.2rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  font-size: 2.4rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease);
+}
+
+.ws-pad {
+  position: absolute;
+  top: 32.6rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 4.4rem;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+
+.ws-pad span {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.ws-item.ws-user.sel .ws-opt {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.ws-item.ws-user.sel .ws-pad {
+  opacity: 1;
+}
+
+.ws-power {
+  position: absolute;
+  left: 50%;
+  bottom: 3rem;
+  width: 7.4rem;
+  height: 7.4rem;
+  margin-left: -3.7rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 3.8rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.25s;
+  --fx-r: 3.7rem;
+}
+
+.ws-power.focused {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.ws-select {
+  position: absolute;
+  right: 4.6rem;
+  bottom: 3.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: 2.4rem;
+  font-weight: 600;
+}
+
+/* Build-in: the title, then the avatars pop up one by one, then the rest. */
+.welcome .ws-title,
+.welcome .ws-sub,
+.welcome .ws-clock,
+.welcome .ws-name,
+.welcome .ws-power,
+.welcome .ws-select,
+.welcome .ws-av {
+  opacity: 0;
+}
+
+.welcome.in .ws-title,
+.welcome.in .ws-sub,
+.welcome.in .ws-clock,
+.welcome.in .ws-name,
+.welcome.in .ws-power,
+.welcome.in .ws-select,
+.welcome.in .ws-av {
+  opacity: 1;
+}
+
+.welcome.in .ws-title {
+  animation: wsFade 0.7s var(--ease) 0.35s backwards;
+}
+
+.welcome.in .ws-av {
+  animation: wsPop 0.62s var(--ease-out) calc(0.55s + var(--i) * 0.07s) backwards;
+}
+
+.welcome.in .ws-sub,
+.welcome.in .ws-clock,
+.welcome.in .ws-name,
+.welcome.in .ws-power,
+.welcome.in .ws-select {
+  animation: wsFade 0.5s var(--ease) 0.85s backwards;
+}
+
+.welcome:not(.ready) .ws-opt,
+.welcome:not(.ready) .ws-pad,
+.welcome:not(.ready) .fx::before {
+  opacity: 0 !important;
+}
+
+@keyframes wsFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes wsPop {
+  from { opacity: 0; scale: 0.45; }
+  to { opacity: 1; scale: 1; }
+}
+
+/* Leaving: the other users go first, then the chosen one and the text. */
+.welcome.chosen .ws-item:not(.sel),
+.welcome.chosen .ws-name,
+.welcome.chosen .ws-opt,
+.welcome.chosen .ws-pad {
+  opacity: 0 !important;
+  transition: opacity 0.15s var(--ease);
+}
+
+.welcome.out .ws-title,
+.welcome.out .ws-sub,
+.welcome.out .ws-clock,
+.welcome.out .ws-power,
+.welcome.out .ws-select,
+.welcome.out .ws-item.sel {
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+
+.welcome.out .ws-item.sel .ws-av {
+  scale: 0.9;
+}
+
+/* Drag & drop */
+.drop-hint {
+  position: fixed;
+  inset: 2rem;
+  z-index: 800;
+  border: 0.4rem dashed rgba(255, 255, 255, 0.6);
+  border-radius: 3rem;
+  background: rgba(10, 20, 50, 0.6);
+  backdrop-filter: blur(1rem);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  text-align: center;
+}
+
+.drop-hint.show {
+  opacity: 1;
+}
+
+.drop-hint b {
+  display: block;
+  font-size: 5rem;
+  font-weight: 300;
+}
+
+.drop-hint span {
+  font-size: 2.4rem;
+  color: var(--text-2);
+}
+
+/* PS5 power-on: the PlayStation symbol pulses over the spotlight and bokeh stage */
+.boot-logo { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; pointer-events: none; animation: blOut 1.6s ease 5.2s forwards; }
+.boot-logo .bl-mark { width: 17vh; height: 17vh; color: #fff; animation: blIn 1.7s cubic-bezier(.2,.8,.2,1) .2s backwards, blGlow 3.8s cubic-bezier(.45,0,.55,1) .2s infinite alternate backwards; position: relative; }
+.boot-logo .bl-mark svg { width: 100%; height: 100%; display: block; animation: blBlur 1.7s cubic-bezier(.2,.8,.2,1) .2s backwards; }
+@keyframes blBlur { from { filter: blur(22px); } }
+@keyframes blIn { from { opacity: 0; scale: .9; filter: blur(14px) drop-shadow(0 0 0 rgba(150, 190, 255, 0)); } }
+@keyframes blPulse { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 2.2vh rgba(150, 190, 255, .55)); } 50% { opacity: .7; filter: drop-shadow(0 0 4vh rgba(150, 190, 255, .9)); } }
+@keyframes blOut { to { opacity: 0; } }
+#boot-cover { animation: bcGone .01s 14s forwards; }
+@keyframes bcGone { to { opacity: 0; visibility: hidden; } }
+
+/* Arabic welcome text: a little bolder, no letter spacing (it breaks joined letters) */
+.lang-rtl .ws-title { font-weight: 700; letter-spacing: 0; line-height: 1.3; font-size: 6rem; }
+.lang-rtl .ws-sub { font-weight: 400; letter-spacing: 0; line-height: 1.4; }
+
+/* Epilepsy notice (as on the console, between the logo and the welcome screen) */
+.boot-warn { position: absolute; inset: 0; z-index: 6; background: #000; display: flex; align-items: center; justify-content: center; animation: bwIn .6s ease backwards, blOut .7s ease 2.3s forwards; }
+.boot-warn::before { content: ''; position: absolute; right: -8%; top: -12%; width: 52%; height: 90%; background: radial-gradient(ellipse at 50% 50%, rgba(16, 70, 82, .55), rgba(10, 40, 52, .25) 50%, transparent 72%); }
+.boot-warn p { position: relative; width: 68%; margin: 0 0 6rem; font-size: 1.9rem; line-height: 1.5; letter-spacing: .02em; color: rgba(255, 255, 255, .62); text-transform: uppercase; }
+html.lang-rtl .boot-warn p { text-transform: none; letter-spacing: 0; text-align: right; }
+@keyframes bwIn { from { opacity: 0; } }
+
+/* PS logo: rises out of blur, a light sweeps across it, and it breathes */
+.boot-logo .bl-mark::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 38%, rgba(190, 220, 255, .95) 50%, transparent 62%) 160% 0 / 260% 100% no-repeat;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M8.984 2.596v17.547l3.915 1.261V6.688c0-.69.304-1.151.794-.991.636.18.76.814.76 1.505v5.875c2.441 1.193 4.362-.002 4.362-3.152 0-3.237-1.126-4.675-4.438-5.827-1.307-.448-3.728-1.186-5.39-1.502zm4.656 16.241l6.296-2.275c.715-.258.826-.625.246-.818-.586-.192-1.637-.139-2.357.123l-4.205 1.5V14.98l.24-.085s1.201-.42 2.913-.615c1.696-.18 3.785.03 5.437.661 1.848.601 2.04 1.472 1.576 2.072-.465.6-1.622 1.036-1.622 1.036l-8.544 3.107V18.86zM1.807 18.6c-1.9-.545-2.214-1.668-1.352-2.32.801-.586 2.16-1.052 2.16-1.052l5.615-2.013v2.313L4.205 17c-.705.271-.825.632-.239.826.586.195 1.637.15 2.343-.12L8.247 17v2.074c-.12.03-.256.044-.39.073-1.939.331-3.996.196-6.038-.479z'/></svg>") center / contain no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M8.984 2.596v17.547l3.915 1.261V6.688c0-.69.304-1.151.794-.991.636.18.76.814.76 1.505v5.875c2.441 1.193 4.362-.002 4.362-3.152 0-3.237-1.126-4.675-4.438-5.827-1.307-.448-3.728-1.186-5.39-1.502zm4.656 16.241l6.296-2.275c.715-.258.826-.625.246-.818-.586-.192-1.637-.139-2.357.123l-4.205 1.5V14.98l.24-.085s1.201-.42 2.913-.615c1.696-.18 3.785.03 5.437.661 1.848.601 2.04 1.472 1.576 2.072-.465.6-1.622 1.036-1.622 1.036l-8.544 3.107V18.86zM1.807 18.6c-1.9-.545-2.214-1.668-1.352-2.32.801-.586 2.16-1.052 2.16-1.052l5.615-2.013v2.313L4.205 17c-.705.271-.825.632-.239.826.586.195 1.637.15 2.343-.12L8.247 17v2.074c-.12.03-.256.044-.39.073-1.939.331-3.996.196-6.038-.479z'/></svg>") center / contain no-repeat;
+  animation: blSweep 2.8s ease-in-out 1.6s infinite;
+}
+@keyframes blIn { from { opacity: 0; scale: .8; } }
+@keyframes blGlow { from { filter: drop-shadow(0 0 0 rgba(150, 190, 255, 0)); } to { filter: drop-shadow(0 0 4.2vh rgba(170, 205, 255, .9)); } }
+@keyframes blSweep { 0% { background-position: 160% 0; } 55%, 100% { background-position: -60% 0; } }

@@ -1,0 +1,73 @@
+@font-face { font-family: "PS Sans"; src: url("../fonts/ps/PSSans-Medium.woff") format("woff"); font-weight: 500; }
+@font-face { font-family: "PS Sans"; src: url("../fonts/ps/PSSans-Bold.woff") format("woff"); font-weight: 700; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  font-family: "SST UI", "PS Sans", "Segoe UI", system-ui, sans-serif;
+  color: #fff;
+  user-select: none;
+  pointer-events: none;
+}
+
+.hud {
+  position: fixed;
+  display: none;
+  min-width: 150px;
+  padding: 10px 14px 11px;
+  border-radius: 12px;
+  background: rgba(14, 16, 24, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  font-size: 13px;
+  line-height: 1.25;
+  transform-origin: var(--ox, 100%) var(--oy, 0);
+}
+.hud.show { display: block; }
+
+.hud.tl { top: 18px; left: 18px; --ox: 0%; --oy: 0%; }
+.hud.tr { top: 18px; right: 18px; --ox: 100%; --oy: 0%; }
+.hud.bl { bottom: 18px; left: 18px; --ox: 0%; --oy: 100%; }
+.hud.br { bottom: 18px; right: 18px; --ox: 100%; --oy: 100%; }
+
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 2px 0;
+}
+.row .k {
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+.row .v {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+.row .v small {
+  font-weight: 500;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 6px;
+}
+.row.fps .v { font-size: 22px; color: #6ee7a0; }
+.row.fps .v.low { color: #fbbf24; }
+.row.fps .v.bad { color: #f87171; }
+.row.fps .v.na { color: rgba(255, 255, 255, 0.4); font-size: 16px; }
+
+.hot { color: #f87171; }
+.warm { color: #fbbf24; }
+
+.hud.compact { padding: 6px 10px; font-size: 12px; }
+.hud.compact .row { gap: 8px; padding: 0; }
+.hud.compact .row .k { font-size: 10px; }
+.hud.compact .row.fps .v { font-size: 16px; }

@@ -1,0 +1,13 @@
+/* Animated login-style stage behind the home screen and the other views. */
+.bg-stage { z-index: 0; }
+.bg-stage .bs-black { transition: opacity 1.2s var(--ease); }
+
+/* Hero artwork covers the stage: freeze the CSS animations too. */
+#app:has(#hero-bg.has-image) .bg-stage,
+#app:has(#hero-bg.has-image) .bg-stage * {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-stage, .bg-stage * { animation: none !important; }
+}

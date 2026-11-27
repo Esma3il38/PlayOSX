@@ -1,0 +1,4 @@
+Concentus 1.1.7: a C# port of the Opus audio codec.
+https://github.com/lostromb/concentus (NuGet: Concentus)
+Copyright (c) Xiph.Org Foundation, Skype Limited, CSIRO, Microsoft Corp.
+Licensed under the Opus licence (BSD 3-clause): https://opus-codec.org/license/
