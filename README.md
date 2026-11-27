@@ -23,7 +23,7 @@
 ### Watch the demo
 
 <p align="center">
-  <a href="https://youtu.be/YOUR_VIDEO_ID">
+  <a href="https://youtu.be/X2W-YJg6u_Y?si=YwQ1D5n5putKIhVY">
     <img src="docs/video-thumbnail.png" alt="Watch the demo" width="700">
   </a>
 </p>
