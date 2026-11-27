@@ -17,7 +17,9 @@
 ## Preview
 
 <p align="center">
-  <img src="docs/screenshot.png" alt="PlayOSX" width="900">
+  <img src="docs/screenshot.png" alt="PlayOSX" width="500">
+  <img src="docs/screenshot0.png" alt="PlayOSX" width="500">
+  <img src="docs/screenshot1.png" alt="PlayOSX" width="500">
 </p>
 
 ### Watch the demo
