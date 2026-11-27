@@ -51,3 +51,9 @@ PlayOSX turns your PC into a living-room console. Everything is built for a cont
 ## ⚠️ Disclaimer
 
 PlayOSX is an independent fan project. It is not affiliated with or endorsed by Sony Interactive Entertainment. PlayStation and PS5 are trademarks of their respective owners.
+
+
+## License
+
+[MIT](LICENSE)
+
