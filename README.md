@@ -6,7 +6,7 @@
 
 **A controller-first game launcher for Windows with a PS5-style interface.**
 
-![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white) ![Electron](https://img.shields.io/badge/Electron-30-47848F?logo=electron&logoColor=white) ![Version](https://img.shields.io/badge/version-1.0.1--beta-blue)
+![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white) ![Electron](https://img.shields.io/badge/Electron-44-47848F?logo=electron&logoColor=white) ![Version](https://img.shields.io/badge/version-1.0.2-blue)
 
 **English** · [العربية](README.ar.md)
 
