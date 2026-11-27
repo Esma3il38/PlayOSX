@@ -6,7 +6,7 @@
 
 **لانشر ألعاب للويندوز بواجهة بتشبه PS5 ومصمم للتحكم بالذراع.**
 
-![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white) ![Electron](https://img.shields.io/badge/Electron-44-47848F?logo=electron&logoColor=white) ![Version](https://img.shields.io/badge/version-1.0.1--beta-blue)
+![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white) ![Electron](https://img.shields.io/badge/Electron-44-47848F?logo=electron&logoColor=white) ![Version](https://img.shields.io/badge/version-1.0.2-blue)
 
 [English](README.md) · **العربية**
 
