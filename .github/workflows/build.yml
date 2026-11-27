@@ -37,6 +37,8 @@ jobs:
           path: |
             dist/PlayOSX-Setup-*.exe
             dist/PlayOSX-*-win-x64.zip
+            dist/latest.yml
+            dist/*.blockmap
           if-no-files-found: error
 
       # Runs only after SignPath approval, once you add the repository
